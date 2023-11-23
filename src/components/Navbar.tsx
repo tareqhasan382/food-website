@@ -14,7 +14,7 @@ const Navbar = () => {
   return (
     <div className=" bg-[#CC470A] max-w-[1640px] mx-auto flex justify-between items-center py-4 px-2 lg:px-20 ">
       {/* left side */}
-      <div className=" flex items-center ">
+      <div className="  flex items-center ">
         <div className=" cursor-pointer ">
           <MdOutlineRestaurantMenu
             onClick={() => setOpen(!open)}

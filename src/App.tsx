@@ -1,4 +1,6 @@
+import Food from "./components/Food";
 import Hero from "./components/Hero";
+import HeroCards from "./components/HeroCards";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -7,6 +9,8 @@ function App() {
       <div>
         <Navbar />
         <Hero />
+        <HeroCards />
+        <Food />
       </div>
     </>
   );
