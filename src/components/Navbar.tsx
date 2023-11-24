@@ -1,4 +1,4 @@
-import { MdOutlineRestaurantMenu, MdFavorite } from "react-icons/md";
+import { MdFavorite } from "react-icons/md";
 import { IoSearchCircle, IoCloseSharp } from "react-icons/io5";
 import { FaShoppingCart, FaWallet, FaUserFriends } from "react-icons/fa";
 import { IoIosHelpCircle, IoMdPricetags } from "react-icons/io";
@@ -12,20 +12,20 @@ const Navbar = () => {
   // const toggle = () => {};
   //md width: 768px || lg width: 1024px
   return (
-    <div className=" bg-[#CC470A] max-w-[1640px] mx-auto flex justify-between items-center py-4 px-2 lg:px-20 ">
+    <div className=" fixed top-0 w-full z-20 bg-[#CC470A] max-w-[1640px] mx-auto flex justify-between items-center py-4 px-2 lg:px-20 ">
       {/* left side */}
       <div className="  flex items-center ">
-        <div className=" cursor-pointer ">
-          <MdOutlineRestaurantMenu
-            onClick={() => setOpen(!open)}
-            size={40}
-            className=" font-bold "
-          />
+        <div
+          onClick={() => setOpen(!open)}
+          className=" cursor-pointer flex items-center "
+        >
+          {/* <MdOutlineRestaurantMenu size={40} className=" font-bold " /> */}
           {/* hidden sm:flex */}
+          <h1 className=" text-2xl sm:text-3xl lg:text-4xl px-2 ">
+            Best <span className=" font-bold  ">Eats</span>
+          </h1>
         </div>
-        <h1 className=" text-2xl sm:text-3xl lg:text-4xl px-2 ">
-          Best <span className=" font-bold  ">Eats</span>
-        </h1>
+
         <div className=" hidden lg:flex items-center bg-gray-200 rounded-full p-1 text-[14px] ">
           <p className=" bg-black text-white rounded-full p-1 px-2 cursor-pointer ">
             Delivery

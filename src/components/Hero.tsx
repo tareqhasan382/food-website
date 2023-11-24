@@ -1,7 +1,7 @@
 const Hero = () => {
   //px-2 lg:px-20
   return (
-    <div className=" max-w-[1640px] mx-auto   ">
+    <div className=" max-w-[1640px] mx-auto mt-[70px]  ">
       <div className=" max-h-[500px] relative ">
         {/* Delivery */}
         <div className=" absolute w-full h-full text-[#CC470A] max-h-[500px] flex flex-col pt-8 lg:px-20 ">

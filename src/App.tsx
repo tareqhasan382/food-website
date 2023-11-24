@@ -1,3 +1,4 @@
+import Category from "./components/Category";
 import Food from "./components/Food";
 import Hero from "./components/Hero";
 import HeroCards from "./components/HeroCards";
@@ -11,6 +12,7 @@ function App() {
         <Hero />
         <HeroCards />
         <Food />
+        <Category />
       </div>
     </>
   );
