@@ -1,5 +1,5 @@
 export const getBaseUrl = (): string => {
-  return "http://localhost:5000";
+  return "https://food-website-backend.vercel.app";
 };
 
 // http://localhost:5000 || https://food-website-backend.vercel.app
