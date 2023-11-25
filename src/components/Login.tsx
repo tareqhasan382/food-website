@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { setToLocalStorage } from "../utills/local-storage";
 import { authKey } from "../constant/storageKey";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 type Inputs = {
   email: string;
   password: string;
@@ -17,8 +18,9 @@ const Login: React.FC = () => {
   const { register, handleSubmit, reset } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     const response: any = await login(data);
-    window.alert(response?.data?.message);
+    //window.alert(response?.data?.message);
     if (!isLoading && response?.data?.data?.accessToken) {
+      toast.success("User loggedIn SuccessFully");
       setToLocalStorage(authKey, response?.data?.data?.accessToken);
       navigate("/");
     }

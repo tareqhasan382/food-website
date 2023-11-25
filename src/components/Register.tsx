@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import { Link } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useSignupMutation } from "../redux/api/authApi";
-
+import { toast } from "react-toastify";
 type Inputs = {
   name: string;
   email: string;
@@ -18,10 +18,12 @@ const Register: React.FC = () => {
     message = response?.data?.statusCode;
     console.log(response);
     if (isSuccess) {
-      window.alert("user Loggegd in successfully");
+      toast.success("User Register SuccessFully");
+      // window.alert("user Loggegd in successfully");
       reset();
     } else {
-      window.alert("user loggedin faild");
+      toast.error("User Register Faild");
+      // window.alert("user loggedin faild");
     }
   };
 
