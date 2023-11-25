@@ -27,8 +27,9 @@ const Login: React.FC = () => {
   };
   console.log("isSuccess:", isSuccess);
   console.log("isLoading:", isLoading);
+  // grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8 || gray-200
   return (
-    <div className="bg-gray-200 ">
+    <div className=" ">
       <div>
         <Navbar />
       </div>
@@ -36,7 +37,7 @@ const Login: React.FC = () => {
         Login Page
       </h1>
       {/*============== login form ===================*/}
-      <div className=" pt-8 pb-20 flex items-center justify-center px-2  ">
+      <div className=" pt-8 pb-24 flex items-center justify-center px-2  ">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className=" px-2 lg:w-[400px] w-full flex flex-col gap-3 py-5 outline rounded-md outline-1 outline-black "

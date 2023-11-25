@@ -3,6 +3,7 @@ import App from "../App";
 import Cart from "../components/Cart";
 import Login from "../components/Login";
 import Register from "../components/Register";
+import NotFoud from "../components/NotFoud";
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +20,10 @@ const routes = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "*",
+    element: <NotFoud />,
   },
 ]);
 export default routes;

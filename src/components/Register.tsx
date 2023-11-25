@@ -62,7 +62,7 @@ const Register: React.FC = () => {
             placeholder="password"
             className=" pl-2 w-full rounded-md h-10 focus:outline-none "
           />
-          <p className=" text-sm font-bold text-right px-2 ">{} </p>
+          <p className=" text-sm font-bold text-right px-2 ">{message} </p>
           <button
             type="submit"
             disabled={isLoading}
