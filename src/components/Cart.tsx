@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 //import { getFromLocalStorage } from "../utills/local-storage";
 import { addToCart, removeFromCart, removeOne } from "../redux/cardSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { isLoggedIn } from "../utills/local-storage";
 import Navbar from "./Navbar";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 interface IFood {
   _id: string;
   name: string;
@@ -13,7 +17,26 @@ interface IFood {
   quantity?: number;
 }
 const Cart: React.FC = () => {
+  const navigate = useNavigate();
+  const userLoggedIn = isLoggedIn();
+  const [loading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!userLoggedIn) {
+      navigate("/login");
+    }
+    setIsLoading(true);
+  }, [loading, userLoggedIn]);
+
+  if (!loading) {
+    <div>
+      <h1>Loading..........</h1>
+    </div>;
+  }
+
+  //=======================Get data=================================
   const dispatch = useAppDispatch();
+
   const { foods } = useAppSelector((state) => state.cart);
   const totalPrice: number = foods
     .map((item: IFood) => {

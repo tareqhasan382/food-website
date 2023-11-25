@@ -6,12 +6,24 @@ import { BsFillFileArrowDownFill } from "react-icons/bs";
 import { SiShopify } from "react-icons/si";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { isLoggedIn, removeUserInfo } from "../utills/local-storage";
+import { authKey } from "../constant/storageKey";
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   // const [delivery, setDelivery] = useState<boolean>(true);
   // const [pickup, setPickup] = useState<boolean>(false);
   // const toggle = () => {};
   //md width: 768px || lg width: 1024px
+  const logout = () => {
+    removeUserInfo(authKey);
+    navigate("/");
+  };
+  const loggedIn = isLoggedIn();
+  // if(!loggedIn){
+  //   navigate('/another-route');
+  // }
   return (
     <div className=" fixed top-0 w-full z-20 bg-[#CC470A] max-w-[1640px] mx-auto flex justify-between items-center py-4 px-2 lg:px-20 ">
       {/* left side */}
@@ -22,7 +34,7 @@ const Navbar = () => {
         >
           {/* <MdOutlineRestaurantMenu size={40} className=" font-bold " /> */}
           {/* hidden sm:flex */}
-          <h1 className=" text-2xl sm:text-3xl lg:text-4xl px-2 ">
+          <h1 className=" text-black hover:text-gray-800 text-2xl sm:text-3xl lg:text-4xl px-2 ">
             Best <span className=" font-bold  ">Eats</span>
           </h1>
         </div>
@@ -47,16 +59,31 @@ const Navbar = () => {
         {/* card button | /cart  */}
         <div className="ml-2 flex items-center">
           <Link to="/cart">
-            <button className=" bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
+            <button className=" bg-black transition duration-300 ease-in-out hover:bg-gray-800 text-white rounded-full hidden sm:flex items-center py-2  ">
               <FaShoppingCart size={20} className=" mr-2 " /> Cart
             </button>
           </Link>
-          <button className=" ml-2 lg:flex md:hidden bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
-            Log in
-          </button>
+          {loggedIn ? (
+            <>
+              <button
+                onClick={logout}
+                className="transition duration-300 ease-in-out hover:bg-gray-800 ml-2 lg:flex md:hidden bg-black text-white rounded-full hidden sm:flex items-center py-2  "
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <button className="transition duration-300 ease-in-out hover:bg-gray-800 ml-2 lg:flex md:hidden bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
+                  Log in
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
-      {/* Mobaile Menu ||  */}
+      {/* Mobaile Menu || /login  */}
       {/* Overlay */}
       {open && (
         <div className=" bg-black/50 fixed w-full h-screen z-10 top-0 left-0  duration-500"></div>
@@ -76,7 +103,7 @@ const Navbar = () => {
           className=" absolute right-4 cursor-pointer "
         />
         <Link to="/">
-          <h2 className=" text-2xl p-4  ">
+          <h2 className=" text-2xl p-4 text-[#CC470A] cursor-pointer  ">
             Best <span className=" font-bold  ">Eats </span>
           </h2>
         </Link>
