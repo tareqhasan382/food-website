@@ -32,20 +32,24 @@ const Cart: React.FC = () => {
                 className=" bg-white duration-300 h-auto flex items-center justify-between outline rounded-md outline-1 outline-black "
               >
                 <img
-                  src="https://tse3.mm.bing.net/th?id=OIP.BEH8rpIxoiUt_AQDRmSYTAHaFY&pid=Api&P=0&h=220"
+                  src={item.Image}
                   alt="img"
                   className=" w-[70px] h-[70px] pl-2 "
                 />
                 <div className=" flex flex-col ">
                   <p className="  ">
-                    Name:{" "}
-                    <span className=" font-bold ">Double Cheese Salads</span>
+                    Name:
+                    <span className=" font-bold ">{item.name} </span>
                   </p>
                   <p>
-                    Price: <span className="text-base font-bold">$99</span>
+                    Price:{" "}
+                    <span className="text-base font-bold">${item.price} </span>
                   </p>
                   <p>
-                    quantity: <span className="text-base font-bold">2</span>
+                    quantity:{" "}
+                    <span className="text-base font-bold">
+                      {item.quantity}{" "}
+                    </span>
                   </p>
                 </div>
                 <div className="flex flex-col p-2 gap-1 ">
