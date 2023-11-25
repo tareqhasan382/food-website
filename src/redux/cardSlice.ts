@@ -54,7 +54,9 @@ const cartSlice = createSlice({
       if (existing && existing.quantity! > 1) {
         existing.quantity = existing.quantity! - 1;
       } else {
-        state.foods.push({ ...action.payload, quantity: 1 });
+        state.foods = state.foods.filter(
+          (item: IFood) => item._id !== action.payload._id
+        );
       }
     },
 
@@ -68,16 +70,3 @@ const cartSlice = createSlice({
 });
 export const { addToCart, removeOne, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;
-
-//localStorage.setItem("cart", JSON.stringify(state));
-
-/*
-interface ICart {
-  packages: ITrips[];
-  total: number;
-}
-const initialState: ICart = {
-  packages: [],
-  total: 0,
-};
-*/

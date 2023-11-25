@@ -1,5 +1,6 @@
 //import { getFromLocalStorage } from "../utills/local-storage";
-import { useAppSelector } from "../redux/hooks";
+import { addToCart, removeFromCart, removeOne } from "../redux/cardSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import Navbar from "./Navbar";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
@@ -12,9 +13,22 @@ interface IFood {
   quantity?: number;
 }
 const Cart: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { foods } = useAppSelector((state) => state.cart);
-  // const cart = getFromLocalStorage("cart");
-  console.log(foods);
+  const totalPrice: number = foods
+    .map((item: IFood) => {
+      // Ensure item.price is a string before using replace
+      const numericPrice: number = parseFloat(
+        String(item.price).replace("$", "")
+      );
+      return item.quantity! * numericPrice;
+    })
+    .reduce(
+      (accumulator: number, currentValue: number) => accumulator + currentValue,
+      0
+    );
+
+  // console.log(`Total Price: $${totalPrice.toFixed(2)}`);
   return (
     <div className="bg-gray-200">
       <div>
@@ -54,14 +68,17 @@ const Cart: React.FC = () => {
                 </div>
                 <div className="flex flex-col p-2 gap-1 ">
                   <FaPlus
+                    onClick={() => dispatch(addToCart(item))}
                     size={30}
                     className=" cursor-pointer bg-[#CC470A] rounded-lg p-2  "
                   />
                   <FaMinus
+                    onClick={() => dispatch(removeOne(item))}
                     size={30}
                     className=" cursor-pointer bg-[#CC470A] rounded-lg p-2  "
                   />
                   <RiDeleteBin5Fill
+                    onClick={() => dispatch(removeFromCart(item))}
                     size={30}
                     className=" cursor-pointer bg-[#CC470A] rounded-lg p-2  "
                   />
@@ -72,9 +89,11 @@ const Cart: React.FC = () => {
           {/*==================== Order Now ====================*/}
           <div className=" top-0 lg:w-1/2 w-full">
             <div className=" relative top-0  flex flex-col text-lg items-center justify-center py-2 outline rounded-md outline-1 outline-black ">
-              <p className=" ">Order Now</p>
+              {/* <p className=" ">Order Now</p> */}
               <p>
-                Total: <span className=" font-bold ">$99</span>
+                <span className=" font-bold ">{`Total Price: $${totalPrice.toFixed(
+                  2
+                )}`}</span>
               </p>
               <form
                 action=""
