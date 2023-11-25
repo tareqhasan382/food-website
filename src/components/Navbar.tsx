@@ -5,6 +5,7 @@ import { IoIosHelpCircle, IoMdPricetags } from "react-icons/io";
 import { BsFillFileArrowDownFill } from "react-icons/bs";
 import { SiShopify } from "react-icons/si";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false);
   // const [delivery, setDelivery] = useState<boolean>(true);
@@ -43,11 +44,13 @@ const Navbar = () => {
             className=" w-full bg-transparent p-2 focus:outline-none"
           />
         </div>
-        {/* card button |  */}
+        {/* card button | /cart  */}
         <div className="ml-2 flex items-center">
-          <button className=" bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
-            <FaShoppingCart size={20} className=" mr-2 " /> Cart
-          </button>
+          <Link to="/cart">
+            <button className=" bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
+              <FaShoppingCart size={20} className=" mr-2 " /> Cart
+            </button>
+          </Link>
           <button className=" ml-2 lg:flex md:hidden bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
             Log in
           </button>
@@ -72,14 +75,18 @@ const Navbar = () => {
           size={40}
           className=" absolute right-4 cursor-pointer "
         />
-        <h2 className=" text-2xl p-4  ">
-          Best <span className=" font-bold  ">Eats </span>
-        </h2>
+        <Link to="/">
+          <h2 className=" text-2xl p-4  ">
+            Best <span className=" font-bold  ">Eats </span>
+          </h2>
+        </Link>
         <nav>
           <ul className=" flex flex-col p-4 text-gray-800 ">
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300 ">
-              <SiShopify size={20} className=" mr-2 " /> Orders
-            </li>
+            <Link to="/cart">
+              <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300 ">
+                <SiShopify size={20} className=" mr-2 " /> Orders
+              </li>
+            </Link>
             <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
               <MdFavorite size={20} className=" mr-2 " /> Favorites
             </li>

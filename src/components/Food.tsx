@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// YourComponent.js
 import React, { useState } from "react";
 import { useGetFoodsQuery } from "../redux/api/foodApi";
-
+import { TbShoppingBagPlus } from "react-icons/tb";
+import { addToCart } from "../redux/cardSlice";
+import { useAppDispatch } from "../redux/hooks";
 interface MenuItem {
   _id: string;
   name: string;
@@ -12,6 +13,7 @@ interface MenuItem {
 }
 
 const Food: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [limit] = useState<number>(10);
   const [page] = useState<number>(1);
   const [filterField, setFilterField] = useState<string>("");
@@ -153,10 +155,15 @@ const Food: React.FC = () => {
                 <div className="px-2 flex justify-between py-4">
                   <p className="font-bold cursor-pointer">{item.name}</p>
                   <p className="absolute top-2 right-2">
-                    <span className="bg-[#CC470A] text-white p-1 rounded-full">
-                      {item.price}
+                    <span className="bg-[#CC470A] text-white p-1 rounded-full font-bold ">
+                      ${item.price}
                     </span>
                   </p>
+                  <TbShoppingBagPlus
+                    onClick={() => dispatch(addToCart(item))}
+                    size={30}
+                    className=" bg-[#CC470A] text-white p-1 rounded-full cursor-pointer font-bold "
+                  />
                 </div>
               </div>
             ))}
@@ -168,3 +175,4 @@ const Food: React.FC = () => {
 };
 
 export default Food;
+// absolute top-2 left-2 || md:flex absolute top-1 left-2  |  addToCart
