@@ -3,7 +3,7 @@
 import { addToCart, removeFromCart, removeOne } from "../redux/cardSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { isLoggedIn } from "../utills/local-storage";
-import Navbar from "./Navbar";
+
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
@@ -53,10 +53,7 @@ const Cart: React.FC = () => {
 
   // console.log(`Total Price: $${totalPrice.toFixed(2)}`);
   return (
-    <div className="bg-gray-200">
-      <div>
-        <Navbar />
-      </div>
+    <div className="bg-gray-200 min-h-full pb-20 ">
       <div className="mx-auto mt-[70px] flex flex-col pt-8 lg:px-20 ">
         <h1 className=" text-center text-xl font-bold ">Cart Page</h1>
 

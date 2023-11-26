@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { isLoggedIn, removeUserInfo } from "../utills/local-storage";
 import { authKey } from "../constant/storageKey";
 import { useNavigate } from "react-router-dom";
+import { RiAdminFill } from "react-icons/ri";
 const Navbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -132,6 +133,11 @@ const Navbar = () => {
             <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
               <FaUserFriends size={20} className=" mr-2 " /> Invite Friends
             </li>
+            <Link to="/dashboard">
+              <li className=" text-xl font-bold py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
+                <RiAdminFill size={30} className=" mr-2 " /> Dashboard
+              </li>
+            </Link>
           </ul>
         </nav>
       </div>

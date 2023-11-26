@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Navbar from "./Navbar";
 import { Link } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useSignupMutation } from "../redux/api/authApi";
@@ -32,10 +31,7 @@ const Register: React.FC = () => {
   console.log("message:", message);
 
   return (
-    <div className="bg-gray-200 ">
-      <div>
-        <Navbar />
-      </div>
+    <div className="bg-gray-200 min-h-screen ">
       <h1 className=" mt-[70px] pt-14  text-center text-xl font-bold ">
         Register Page
       </h1>

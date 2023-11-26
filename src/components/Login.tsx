@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLoginMutation } from "../redux/api/authApi";
-import Navbar from "./Navbar";
 import { Link } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { setToLocalStorage } from "../utills/local-storage";
@@ -31,10 +30,10 @@ const Login: React.FC = () => {
   console.log("isLoading:", isLoading);
   // grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8 || gray-200
   return (
-    <div className=" ">
-      <div>
+    <div className=" min-h-screen bg-slate-300 ">
+      {/* <div>
         <Navbar />
-      </div>
+      </div> */}
       <h1 className=" mt-[70px] pt-14  text-center text-xl font-bold ">
         Login Page
       </h1>

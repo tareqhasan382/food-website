@@ -23,14 +23,25 @@ export const foodApi = baseApi.injectEndpoints({
         url: `/api/v1/food/${id}`,
         method: "GET",
       }),
+    }),
+    deleteFood: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/api/v1/food/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["food"],
       // transformResponse: (response: ITrips) => {
       //   return {
-      //     package: response,
+      //     package: response, delete
       //   };
       // },
     }),
   }),
 });
 
-export const { useAddFoodMutation, useGetFoodsQuery, useGetFoodQuery } =
-  foodApi;
+export const {
+  useAddFoodMutation,
+  useGetFoodsQuery,
+  useGetFoodQuery,
+  useDeleteFoodMutation,
+} = foodApi;
