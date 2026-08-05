@@ -1,21 +1,15 @@
-import Category from "./components/Category";
-import Food from "./components/Food";
 import Hero from "./components/Hero";
 import HeroCards from "./components/HeroCards";
-// import Navbar from "./components/Navbar";
+import Category from "./components/Category";
+import TopRatedSection from "./components/food/TopRatedSection";
 
-function App() {
-  return (
-    <>
-      <div>
-        {/* <Navbar /> */}
-        <Hero />
-        <HeroCards />
-        <Food />
-        <Category />
-      </div>
-    </>
-  );
-}
+const App: React.FC = () => (
+  <>
+    <Hero />
+    <HeroCards />
+    <Category />
+    <TopRatedSection />
+  </>
+);
 
 export default App;

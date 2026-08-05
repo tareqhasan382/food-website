@@ -1,53 +1,72 @@
+/* eslint-disable react-refresh/only-export-components */
+import { lazy, Suspense } from "react";
+import type { ReactNode } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import Cart from "../components/Cart";
-import Login from "../components/Login";
-import Register from "../components/Register";
-import NotFoud from "../components/NotFoud";
-import Home from "../components/Home";
-import Dashboard from "../components/Dashboard";
-import FromPage from "../components/dashboard/FromPage";
-import AllFood from "../components/dashboard/AllFood";
+import PageLoader from "../components/ui/PageLoader";
+import RequireAuth from "../components/guards/RequireAuth";
+import RequireAdmin from "../components/guards/RequireAdmin";
+import GuestOnly from "../components/guards/GuestOnly";
+
+// Lazy-loaded layouts
+const UserLayout = lazy(() => import("../layouts/UserLayout"));
+const DashboardLayout = lazy(() => import("../layouts/DashboardLayout"));
+
+// Lazy-loaded pages
+const HomePage = lazy(() => import("../App"));
+const MenuPage = lazy(() => import("../pages/MenuPage"));
+const CartPage = lazy(() => import("../pages/CartPage"));
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const OverviewPage = lazy(() => import("../pages/dashboard/OverviewPage"));
+const FoodsPage = lazy(() => import("../pages/dashboard/FoodsPage"));
+const FoodFormPage = lazy(() => import("../pages/dashboard/FoodFormPage"));
+
+const withLoader = (node: ReactNode): ReactNode => (
+  <Suspense fallback={<PageLoader />}>{node}</Suspense>
+);
+
 const routes = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
+    // Public / user layout
+    element: withLoader(<UserLayout />),
     children: [
+      { index: true, element: withLoader(<HomePage />) },
+      { path: "menu", element: withLoader(<MenuPage />) },
       {
-        path: "/",
-        element: <App />,
+        // Requires an authenticated user
+        element: <RequireAuth />,
+        children: [
+          { path: "cart", element: withLoader(<CartPage />) },
+        ],
       },
       {
-        path: "/cart",
-        element: <Cart />,
+        // Already-logged-in users are redirected away
+        element: <GuestOnly />,
+        children: [
+          { path: "login", element: withLoader(<LoginPage />) },
+          { path: "register", element: withLoader(<RegisterPage />) },
+        ],
       },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "*",
-        element: <NotFoud />,
-      },
+      { path: "*", element: withLoader(<NotFoundPage />) },
     ],
   },
   {
-    path: "/dashboard",
-    element: <Dashboard />,
+    // Admin-only area
+    element: <RequireAdmin />,
     children: [
       {
-        path: "/dashboard",
-        element: <AllFood />,
-      },
-      {
-        path: "/dashboard/add",
-        element: <FromPage />,
+        path: "dashboard",
+        element: withLoader(<DashboardLayout />),
+        children: [
+          { index: true, element: withLoader(<OverviewPage />) },
+          { path: "foods", element: withLoader(<FoodsPage />) },
+          { path: "foods/new", element: withLoader(<FoodFormPage />) },
+          { path: "foods/edit/:id", element: withLoader(<FoodFormPage />) },
+        ],
       },
     ],
   },
 ]);
+
 export default routes;

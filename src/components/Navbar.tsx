@@ -1,147 +1,250 @@
-import { MdFavorite } from "react-icons/md";
-import { IoSearchCircle, IoCloseSharp } from "react-icons/io5";
-import { FaShoppingCart, FaWallet, FaUserFriends } from "react-icons/fa";
-import { IoIosHelpCircle, IoMdPricetags } from "react-icons/io";
-import { BsFillFileArrowDownFill } from "react-icons/bs";
-import { SiShopify } from "react-icons/si";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { isLoggedIn, removeUserInfo } from "../utills/local-storage";
-import { authKey } from "../constant/storageKey";
-import { useNavigate } from "react-router-dom";
-import { RiAdminFill } from "react-icons/ri";
-const Navbar = () => {
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import {
+  FaCartPlus,
+  FaChevronDown,
+  FaSignOutAlt,
+  FaStore,
+} from "react-icons/fa";
+import { IoSearch, IoCloseSharp } from "react-icons/io5";
+import { HiMenuAlt3 } from "react-icons/hi";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { logout } from "../redux/authSlice";
+import { toast } from "react-toastify";
+
+const navLinks = [
+  { to: "/", label: "Home" },
+  { to: "/menu", label: "Menu" },
+];
+
+const Navbar: React.FC = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
   const navigate = useNavigate();
-  const [open, setOpen] = useState<boolean>(false);
-  // const [delivery, setDelivery] = useState<boolean>(true);
-  // const [pickup, setPickup] = useState<boolean>(false);
-  // const toggle = () => {};
-  //md width: 768px || lg width: 1024px
-  const logout = () => {
-    removeUserInfo(authKey);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+  const cartCount = useAppSelector((state) =>
+    state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
+
+  const handleSearch = (e: React.FormEvent): void => {
+    e.preventDefault();
+    const q = search.trim();
+    navigate(q ? `/menu?search=${encodeURIComponent(q)}` : "/menu");
+    setMobileOpen(false);
+  };
+
+  const handleLogout = (): void => {
+    dispatch(logout());
+    toast.success("Logged out successfully");
+    setUserMenuOpen(false);
     navigate("/");
   };
-  const loggedIn = isLoggedIn();
-  // if(!loggedIn){
-  //   navigate('/another-route');
-  // }
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent): void => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(e.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className=" fixed top-0 w-full z-20 bg-[#CC470A] max-w-[1640px] mx-auto flex justify-between items-center py-4 px-2 lg:px-20 ">
-      {/* left side */}
-      <div className="  flex items-center ">
-        <div
-          onClick={() => setOpen(!open)}
-          className=" cursor-pointer flex items-center "
-        >
-          {/* <MdOutlineRestaurantMenu size={40} className=" font-bold " /> */}
-          {/* hidden sm:flex */}
-          <h1 className=" text-black hover:text-gray-800 text-2xl sm:text-3xl lg:text-4xl px-2 ">
-            Best <span className=" font-bold  ">Eats</span>
-          </h1>
-        </div>
-
-        <div className=" hidden lg:flex items-center bg-gray-200 rounded-full p-1 text-[14px] ">
-          <p className=" bg-black text-white rounded-full p-1 px-2 cursor-pointer ">
-            Delivery
-          </p>
-          <p className=" p-1 px-2 cursor-pointer ">Pickup</p>
-        </div>
-      </div>
-      {/* search input || w-[200px] sm:w-[400px] lg:w-[500px] */}
-      <div className=" flex items-center">
-        <div className=" bg-gray-200 rounded-full flex items-center px-2">
-          <IoSearchCircle size={30} className=" cursor-pointer " />
-          <input
-            type="text"
-            placeholder="Search foods"
-            className=" w-full bg-transparent p-2 focus:outline-none"
-          />
-        </div>
-        {/* card button | /cart  */}
-        <div className="ml-2 flex items-center">
-          <Link to="/cart">
-            <button className=" bg-black transition duration-300 ease-in-out hover:bg-gray-800 text-white rounded-full hidden sm:flex items-center py-2  ">
-              <FaShoppingCart size={20} className=" mr-2 " /> Cart
-            </button>
-          </Link>
-          {loggedIn ? (
-            <>
-              <button
-                onClick={logout}
-                className="transition duration-300 ease-in-out hover:bg-gray-800 ml-2 lg:flex md:hidden bg-black text-white rounded-full hidden sm:flex items-center py-2  "
-              >
-                Log out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login">
-                <button className="transition duration-300 ease-in-out hover:bg-gray-800 ml-2 lg:flex md:hidden bg-black text-white rounded-full hidden sm:flex items-center py-2  ">
-                  Log in
-                </button>
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-      {/* Mobaile Menu || /login  */}
-      {/* Overlay */}
-      {open && (
-        <div className=" bg-black/50 fixed w-full h-screen z-10 top-0 left-0  duration-500"></div>
-      )}
-
-      {/* side drawer menu */}
-      <div
-        className={
-          open
-            ? "fixed top-0 left-0 w-[200px] h-screen bg-white z-10 duration-500"
-            : "fixed top-0 left-[-100%] w-[200px] h-screen bg-white z-10 duration-500"
-        }
-      >
-        <IoCloseSharp
-          onClick={() => setOpen(!open)}
-          size={40}
-          className=" absolute right-4 cursor-pointer "
-        />
-        <Link to="/">
-          <h2 className=" text-2xl p-4 text-[#CC470A] cursor-pointer  ">
-            Best <span className=" font-bold  ">Eats </span>
-          </h2>
+    <header className="sticky top-0 z-40 bg-white/90 shadow-sm backdrop-blur">
+      <div className="container-app flex items-center justify-between gap-4 py-3">
+        {/* Brand */}
+        <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg text-white">
+            <FaStore />
+          </span>
+          <span className="font-display text-2xl font-bold tracking-tight text-gray-900">
+            Best<span className="text-brand">Eats</span>
+          </span>
         </Link>
-        <nav>
-          <ul className=" flex flex-col p-4 text-gray-800 ">
-            <Link to="/cart">
-              <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300 ">
-                <SiShopify size={20} className=" mr-2 " /> Orders
-              </li>
-            </Link>
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-              <MdFavorite size={20} className=" mr-2 " /> Favorites
-            </li>
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-              <FaWallet size={20} className=" mr-2 " /> Wallet
-            </li>
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-              <IoIosHelpCircle size={20} className=" mr-2 " /> Help
-            </li>
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-              <IoMdPricetags size={20} className=" mr-2 " /> Promotions
-            </li>
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-              <BsFillFileArrowDownFill size={20} className=" mr-2 " /> Best One
-            </li>
-            <li className=" text-xl py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-              <FaUserFriends size={20} className=" mr-2 " /> Invite Friends
-            </li>
-            <Link to="/dashboard">
-              <li className=" text-xl font-bold py-1 flex items-center cursor-pointer hover:text-rose-500 duration-300">
-                <RiAdminFill size={30} className=" mr-2 " /> Dashboard
-              </li>
-            </Link>
-          </ul>
+
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-1 md:flex">
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                `rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                  isActive
+                    ? "bg-brand-50 text-brand"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                }`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
+
+        {/* Search */}
+        <form
+          onSubmit={handleSearch}
+          className="hidden flex-1 max-w-sm lg:block"
+        >
+          <div className="relative">
+            <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search foods…"
+              className="input pl-9"
+              aria-label="Search foods"
+            />
+          </div>
+        </form>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <Link
+            to="/cart"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-brand hover:text-white"
+            aria-label={`Cart, ${cartCount} items`}
+          >
+            <FaCartPlus size={18} />
+            {cartCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1 text-[11px] font-bold text-white">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
+          {user ? (
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setUserMenuOpen((v) => !v)}
+                className="flex items-center gap-2 rounded-full bg-gray-100 py-1 pl-1 pr-3 transition-colors hover:bg-gray-200"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
+                  {user.name?.[0]?.toUpperCase()}
+                </span>
+                <span className="hidden text-sm font-semibold text-gray-700 sm:block">
+                  {user.name?.split(" ")[0]}
+                </span>
+                <FaChevronDown size={12} className="text-gray-500" />
+              </button>
+
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 animate-fade-in rounded-2xl bg-white p-2 shadow-xl ring-1 ring-gray-100">
+                  <div className="border-b border-gray-100 px-3 py-2">
+                    <p className="truncate text-sm font-bold text-gray-800">
+                      {user.name}
+                    </p>
+                    <p className="truncate text-xs text-gray-500">
+                      {user.email}
+                    </p>
+                  </div>
+                  <div className="pt-1">
+                    {user.role === "admin" && (
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-brand-50 hover:text-brand"
+                      >
+                        <FaStore size={15} />
+                        Dashboard
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+                    >
+                      <FaSignOutAlt size={15} />
+                      Log out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="hidden items-center gap-2 sm:flex">
+              <Link to="/login" className="btn-ghost">
+                Log in
+              </Link>
+              <Link to="/register" className="btn-primary">
+                Sign up
+              </Link>
+            </div>
+          )}
+
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setMobileOpen((v) => !v)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 md:hidden"
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <IoCloseSharp size={22} /> : <HiMenuAlt3 size={22} />}
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="border-t border-gray-100 bg-white px-4 py-4 md:hidden">
+          <form onSubmit={handleSearch} className="mb-4">
+            <div className="relative">
+              <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search foods…"
+                className="input pl-9"
+              />
+            </div>
+          </form>
+          <nav className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  `rounded-xl px-4 py-2.5 text-sm font-semibold ${
+                    isActive
+                      ? "bg-brand-50 text-brand"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            {!user && (
+              <div className="mt-2 flex gap-2 border-t border-gray-100 pt-3">
+                <Link
+                  to="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="btn-ghost flex-1"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="btn-primary flex-1"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
+          </nav>
+        </div>
+      )}
+    </header>
   );
 };
 

@@ -1,7 +1,9 @@
-import { baseApi } from "./api/baseApi";
 import cardReducer from "./cardSlice";
+import authReducer from "./authSlice";
+import foodReducer from "./foodSlice";
 
 export const reducer = {
-  [baseApi.reducerPath]: baseApi.reducer,
   cart: cardReducer,
+  auth: authReducer,
+  food: foodReducer,
 };

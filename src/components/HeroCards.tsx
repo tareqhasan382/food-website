@@ -1,62 +1,43 @@
-const HeroCards = () => {
-  return (
-    <div className=" max-w-[1640px] mx-auto grid md:grid-cols-3 gap-6  py-4 px-2 lg:px-20">
-      {/* Card */}
-      <div className=" rounded-xl relative ">
-        {/* Delivery */}
-        <div className=" absolute w-full h-full bg-black/50 rounded-xl text-white ">
-          <p className=" font-bold text-2xl px-2 pt-4 ">
-            Sun's Out. BUGO's Out
-          </p>
-          <p className=" px-2 ">Throught 8/26</p>
-          <button className=" border-white bg-white text-black mx-2 absolute bottom-4 ">
-            Order Now
-          </button>
+import { Link } from "react-router-dom";
+import { promotions } from "../data/data";
+import type { IPromotion } from "../types/food";
+
+const HeroCards: React.FC = () => (
+  <section className="container-app py-10">
+    <div className="grid gap-6 md:grid-cols-3">
+      {promotions.map((promo: IPromotion) => (
+        <div
+          key={promo.id}
+          className="group relative overflow-hidden rounded-2xl shadow-md"
+        >
+          <img
+            src={promo.image}
+            alt={promo.title}
+            className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <span className="absolute left-3 top-3 badge bg-brand text-white shadow">
+            {promo.badge}
+          </span>
+          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+            <p className="text-xs uppercase tracking-wider text-brand-300">
+              {promo.validUntil}
+            </p>
+            <h3 className="mt-1 font-display text-xl font-bold">
+              {promo.title}
+            </h3>
+            <p className="mt-1 text-sm text-gray-200">{promo.subtitle}</p>
+            <Link
+              to="/menu"
+              className="mt-3 inline-block text-sm font-semibold text-white underline-offset-4 hover:underline"
+            >
+              Order now →
+            </Link>
+          </div>
         </div>
-        <img
-          className=" max-h-[200px] md:h-[200px] w-full object-cover rounded-xl "
-          src="https://i.ibb.co/BjhYmqg/Brown-Simple-Restaurant-Special-Menu-Promotion-Card.jpg"
-          alt="img"
-        />
-      </div>
-      <div className=" rounded-xl relative ">
-        {/* Delivery */}
-        <div className=" absolute w-full h-full bg-black/50 rounded-xl text-white ">
-          <p className=" font-bold text-2xl px-2 pt-4 ">
-            Sun's Out. BUGO's Out
-          </p>
-          <p className=" px-2 ">Throught 8/26</p>
-          <button className=" border-white bg-white text-black mx-2 absolute bottom-4 ">
-            Order Now
-          </button>
-        </div>
-        <img
-          className=" max-h-[200px] md:h-[200px] w-full object-cover rounded-xl "
-          src="https://i.ibb.co/0QXhPwB/Brown-Simple-Restaurant-Special-Menu-Promotion-Card-1.jpg"
-          alt="img"
-        />
-      </div>
-      <div className=" rounded-xl relative ">
-        {/* Delivery */}
-        <div className=" absolute w-full h-full bg-black/50 rounded-xl text-white ">
-          <p className=" font-bold text-2xl px-2 pt-4 ">
-            Sun's Out. BUGO's Out
-          </p>
-          <p className=" px-2 ">Throught 8/26</p>
-          <button className=" border-white bg-white text-black mx-2 absolute bottom-4 ">
-            Order Now
-          </button>
-        </div>
-        <img
-          className=" max-h-[200px] md:h-[200px] w-full object-cover rounded-xl "
-          src="https://i.ibb.co/BjhYmqg/Brown-Simple-Restaurant-Special-Menu-Promotion-Card.jpg"
-          alt="img"
-        />
-      </div>
+      ))}
     </div>
-  );
-};
+  </section>
+);
 
 export default HeroCards;
-// https://i.ibb.co/BjhYmqg/Brown-Simple-Restaurant-Special-Menu-Promotion-Card.jpg
-// https://i.ibb.co/0QXhPwB/Brown-Simple-Restaurant-Special-Menu-Promotion-Card-1.jpg

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios from "axios";
-import { getFromLocalStorage } from "../../utills/local-storage";
+import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../constant/storageKey";
 import { IGenericErrorResponse, ResponseSuccessType } from "../../types/common";
 //======================
@@ -16,7 +16,7 @@ instance.interceptors.request.use(
     // Do something before request is sent
     const accessToken = getFromLocalStorage(authKey);
     if (accessToken) {
-      config.headers.Authorization = accessToken;
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
