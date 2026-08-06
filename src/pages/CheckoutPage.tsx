@@ -28,6 +28,8 @@ import type { IDeliveryAddress } from "../types/order";
 import EmptyState from "../components/ui/EmptyState";
 import ErrorState from "../components/ui/ErrorState";
 import Spinner from "../components/ui/Spinner";
+import { useAppDispatch } from "../redux/hooks";
+import { clearCart } from "../redux/cardSlice";
 
 const STRIPE_PUBLISHABLE_KEY =
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
@@ -41,6 +43,27 @@ interface IntentInfo {
   clientSecret: string;
 }
 
+const waitForSucceeded = async (
+  pollFn: () => Promise<unknown>,
+  isSucceeded: (data: unknown) => boolean,
+  isFailed: (data: unknown) => boolean,
+  opts: { timeoutMs?: number; intervalMs?: number } = {}
+): Promise<boolean> => {
+  const { timeoutMs = 15000, intervalMs = 750 } = opts;
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const latest = await pollFn();
+      if (isSucceeded(latest)) return true;
+      if (isFailed(latest)) return false;
+    } catch {
+      // ignore transient poll errors
+    }
+    await new Promise((r) => setTimeout(r, intervalMs));
+  }
+  return false;
+};
+
 interface PaymentFormProps {
   paymentId: string;
   cart: ICartResponse;
@@ -50,6 +73,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentId, cart }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [verifyPayment] = useVerifyPaymentMutation();
   const [createOrder] = useCreateOrderMutation();
@@ -68,7 +92,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentId, cart }) => {
     if (!stripe || !elements) return;
     setIsProcessing(true);
 
-    const { error } = await stripe.confirmPayment({
+    const confirmResult = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/payment/success?paymentId=${paymentId}`,
@@ -76,18 +100,44 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentId, cart }) => {
       redirect: "if_required",
     });
 
-    if (error) {
+    if (confirmResult.error) {
       setIsProcessing(false);
       navigate("/payment/failed", {
-        state: { reason: error.message, paymentId },
+        state: { reason: confirmResult.error.message, paymentId },
       });
       return;
     }
 
-    try {
-      await verifyPayment({ paymentId }).unwrap();
-    } catch {
-      // Webhook may not have synced yet; order placement validates status.
+    const poll = async (): Promise<unknown> => {
+      try {
+        return await verifyPayment({ paymentId }).unwrap();
+      } catch {
+        return { status: "unknown" };
+      }
+    };
+    const isSucceeded = (d: unknown): boolean =>
+      typeof d === "object" && d !== null && (d as { status?: string }).status === "succeeded";
+    const isFailed = (d: unknown): boolean => {
+      if (typeof d !== "object" || d === null) return false;
+      const s = (d as { status?: string }).status;
+      return s === "failed" || s === "canceled";
+    };
+
+    const settled = await waitForSucceeded(poll, isSucceeded, isFailed, {
+      timeoutMs: 20000,
+      intervalMs: 600,
+    });
+
+    if (!settled) {
+      setIsProcessing(false);
+      navigate("/payment/failed", {
+        state: {
+          reason:
+            "We couldn't confirm your payment. Please review it in your order history.",
+          paymentId,
+        },
+      });
+      return;
     }
 
     try {
@@ -100,11 +150,15 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentId, cart }) => {
           city: data.city,
         },
       }).unwrap();
+      dispatch(clearCart());
       navigate(`/order-success/${order._id}`);
-    } catch {
+    } catch (err) {
+      const reason =
+        (err as { data?: { message?: string } })?.data?.message ??
+        "Payment successful, but we couldn't finalize your order. Please reach out.";
       setIsProcessing(false);
       navigate("/payment/success", {
-        state: { paymentId, delivery: data },
+        state: { paymentId, delivery: data, fallback: reason },
       });
     }
   };

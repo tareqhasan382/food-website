@@ -16,10 +16,13 @@ import { useCreateOrderMutation } from "../redux/api/orderApi";
 import type { IDeliveryAddress } from "../types/order";
 import Spinner from "../components/ui/Spinner";
 import ErrorState from "../components/ui/ErrorState";
+import { useAppDispatch } from "../redux/hooks";
+import { clearCart } from "../redux/cardSlice";
 
 interface SuccessLocationState {
   paymentId?: string;
   delivery?: IDeliveryAddress;
+  fallback?: string;
 }
 
 const formatAmount = (amount: number, currency: string): string =>
@@ -29,6 +32,7 @@ const PaymentSuccessPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const state = (location.state ?? {}) as SuccessLocationState;
   const paymentId = searchParams.get("paymentId") ?? state.paymentId ?? "";
 
@@ -57,6 +61,7 @@ const PaymentSuccessPage: React.FC = () => {
         paymentId,
         deliveryAddress: state.delivery,
       }).unwrap();
+      dispatch(clearCart());
       navigate(`/order-success/${order._id}`);
     } catch (err) {
       toast.error(
@@ -149,6 +154,12 @@ const PaymentSuccessPage: React.FC = () => {
         <p className="mt-2 text-sm text-gray-500">
           Thank you! Your payment has been received.
         </p>
+
+        {state.fallback && (
+          <div className="card mt-5 border-amber-200 bg-amber-50 text-left p-4 text-sm text-amber-900">
+            {state.fallback}
+          </div>
+        )}
 
         <div className="card mt-6 space-y-3 p-6 text-left text-sm">
           <div className="flex justify-between">

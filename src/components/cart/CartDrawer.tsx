@@ -25,12 +25,16 @@ import {
   selectSubtotal,
 } from "../../redux/cardSlice";
 import {
+  useAddItemToCartMutation,
   useApplyCouponMutation,
   useRemoveCouponMutation,
+  useRemoveItemFromCartMutation,
+  useUpdateCartQuantityMutation,
 } from "../../redux/api/cartApi";
 import type { ICartItem } from "../../types/food";
 import { foodImage } from "../../utils/food-image";
 import Spinner from "../ui/Spinner";
+import { toast } from "react-toastify";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -54,6 +58,13 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const [applyCouponApi, { isLoading: isApplying }] = useApplyCouponMutation();
   const [removeCouponApi, { isLoading: isRemovingCoupon }] =
     useRemoveCouponMutation();
+  const [addItemServer] = useAddItemToCartMutation();
+  const [updateQtyServer, { isLoading: isUpdatingQty }] =
+    useUpdateCartQuantityMutation();
+  const [removeItemServer, { isLoading: isRemovingItem }] =
+    useRemoveItemFromCartMutation();
+
+  const anyServerAction = isUpdatingQty || isRemovingItem;
 
   const drawerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -78,15 +89,53 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
     if (e.target === overlayRef.current) onClose();
   };
 
-  const handleAdd = (item: ICartItem): void => {
+  const handleAdd = async (item: ICartItem): Promise<void> => {
     dispatch(addToCart(item));
+    if (isLoggedIn) {
+      try {
+        await addItemServer({ foodId: item._id, quantity: 1 }).unwrap();
+      } catch (err) {
+        dispatch(removeOne(item));
+        const msg =
+          (err as { data?: { message?: string } })?.data?.message ??
+          "Could not update cart";
+        toast.error(msg);
+      }
+    }
   };
 
-  const handleRemoveOne = (item: ICartItem): void => {
+  const handleRemoveOne = async (item: ICartItem): Promise<void> => {
+    const nextQty = item.quantity - 1;
+    if (isLoggedIn) {
+      try {
+        if (nextQty <= 0) {
+          await removeItemServer(item._id).unwrap();
+        } else {
+          await updateQtyServer({ foodId: item._id, quantity: nextQty }).unwrap();
+        }
+      } catch (err) {
+        const msg =
+          (err as { data?: { message?: string } })?.data?.message ??
+          "Could not update cart";
+        toast.error(msg);
+        return;
+      }
+    }
     dispatch(removeOne(item));
   };
 
-  const handleRemove = (item: ICartItem): void => {
+  const handleRemove = async (item: ICartItem): Promise<void> => {
+    if (isLoggedIn) {
+      try {
+        await removeItemServer(item._id).unwrap();
+      } catch (err) {
+        const msg =
+          (err as { data?: { message?: string } })?.data?.message ??
+          "Could not remove item";
+        toast.error(msg);
+        return;
+      }
+    }
     dispatch(removeFromCart(item));
   };
 
@@ -202,8 +251,9 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   <div className="flex flex-col items-center gap-1">
                     <div className="flex items-center rounded-full bg-white ring-1 ring-gray-200">
                       <button
-                        onClick={() => handleRemoveOne(item)}
-                        className="flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:text-brand"
+                        onClick={() => void handleRemoveOne(item)}
+                        disabled={anyServerAction}
+                        className="flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:text-brand disabled:opacity-50"
                         aria-label="Decrease quantity"
                       >
                         <FaMinus size={10} />
@@ -212,16 +262,18 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                         {item.quantity ?? 1}
                       </span>
                       <button
-                        onClick={() => handleAdd(item)}
-                        className="flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:text-brand"
+                        onClick={() => void handleAdd(item)}
+                        disabled={anyServerAction}
+                        className="flex h-7 w-7 items-center justify-center rounded-full text-gray-500 hover:text-brand disabled:opacity-50"
                         aria-label="Increase quantity"
                       >
                         <FaPlus size={10} />
                       </button>
                     </div>
                     <button
-                      onClick={() => handleRemove(item)}
-                      className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600"
+                      onClick={() => void handleRemove(item)}
+                      disabled={anyServerAction}
+                      className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 disabled:opacity-50"
                     >
                       <FaTrash size={10} /> Remove
                     </button>
