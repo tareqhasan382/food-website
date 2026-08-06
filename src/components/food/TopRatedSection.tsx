@@ -1,33 +1,29 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
+import { useGetFoodsQuery } from "../../redux/api/foodApi";
+import { useCategories } from "../../hooks/useCategories";
 import SectionHeading from "../ui/SectionHeading";
 import FoodGrid from "./FoodGrid";
+import FoodGridSkeleton from "./FoodGridSkeleton";
+import ErrorState from "../ui/ErrorState";
 
 const TopRatedSection: React.FC = () => {
-  const foods = useAppSelector((state) => state.food);
   const [activeCategory, setActiveCategory] = useState<string>("");
+  const { categories } = useCategories();
 
-  const categories = useMemo(
-    () => Array.from(new Set(foods.map((f) => f.category))),
-    [foods]
+  const args = useMemo(
+    () => ({
+      popular: true,
+      sortBy: "rating" as const,
+      sortOrder: "desc" as const,
+      limit: 8,
+      category: activeCategory || undefined,
+    }),
+    [activeCategory]
   );
 
-  const featured = useMemo(() => {
-    let list = foods.filter((f) => f.featured);
-    if (activeCategory) {
-      list = list.filter((f) => f.category === activeCategory);
-    }
-    return list.length > 0 ? list : foods;
-  }, [foods, activeCategory]);
-
-  const visible = useMemo(
-    () =>
-      activeCategory
-        ? featured.filter((f) => f.category === activeCategory)
-        : featured,
-    [featured, activeCategory]
-  );
+  const { data, isFetching, isError, refetch } = useGetFoodsQuery(args);
+  const foods = data?.foods ?? [];
 
   return (
     <section className="container-app py-12">
@@ -48,22 +44,32 @@ const TopRatedSection: React.FC = () => {
         >
           All
         </button>
-        {categories.map((cat) => (
+        {categories.map((category) => (
           <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
+            key={category.slug}
+            onClick={() => setActiveCategory(category.slug)}
             className={`btn !py-1.5 text-sm capitalize ${
-              activeCategory === cat
+              activeCategory === category.slug
                 ? "btn-primary"
                 : "bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-brand"
             }`}
           >
-            {cat}
+            {category.name}
           </button>
         ))}
       </div>
 
-      <FoodGrid foods={visible.slice(0, 8)} />
+      {isFetching && foods.length === 0 ? (
+        <FoodGridSkeleton />
+      ) : isError ? (
+        <ErrorState
+          title="Couldn't load top rated items"
+          message="We hit a snag while fetching favourites. Please try again."
+          onRetry={refetch}
+        />
+      ) : (
+        <FoodGrid foods={foods} />
+      )}
 
       <div className="mt-10 text-center">
         <Link to="/menu" className="btn-outline">

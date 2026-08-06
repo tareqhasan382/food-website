@@ -2,7 +2,11 @@
 import axios from "axios";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../constant/storageKey";
-import { IGenericErrorResponse, ResponseSuccessType } from "../../types/common";
+import {
+  IGenericErrorMessage,
+  IGenericErrorResponse,
+  ResponseSuccessType,
+} from "../../types/common";
 //======================
 
 const instance = axios.create();
@@ -37,18 +41,33 @@ instance.interceptors.response.use(
     return responseObject;
   },
   async function (error) {
-    if (error?.response?.status === 403) {
-      /* empty */
-    } else {
-      const responseObject: IGenericErrorResponse = {
-        statusCode: error?.response?.data?.statusCode || 500,
-        message: error?.response?.data?.message || "Something went wrong",
-        errorMessages: error?.response?.data?.message,
-      };
-      return responseObject;
-    }
+    const statusCode =
+      error?.response?.status ?? error?.response?.data?.statusCode ?? 500;
+    const rawMessage =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Something went wrong";
+    const rawErrors: IGenericErrorMessage[] =
+      error?.response?.data?.errorMessages ?? [];
 
-    // return Promise.reject(error);
+    const message =
+      rawMessage !== "Validation Error"
+        ? rawMessage
+        : rawErrors[0]?.message || rawMessage;
+
+    const responseObject: IGenericErrorResponse & { statusCode: number } = {
+      statusCode,
+      message,
+      errorMessages: rawErrors.length ? rawErrors : [{ path: "", message }],
+    };
+
+    const err = new Error(message) as Error & {
+      statusCode: number;
+      response: IGenericErrorResponse;
+    };
+    err.statusCode = statusCode;
+    err.response = responseObject;
+    return Promise.reject(err);
   }
 );
 

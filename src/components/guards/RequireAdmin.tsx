@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../redux/hooks";
+import { isAdminRole } from "../../types/auth";
 
 const RequireAdmin: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -15,7 +16,7 @@ const RequireAdmin: React.FC = () => {
     );
   }
 
-  if (user.role !== "admin") {
+  if (!isAdminRole(user.role)) {
     return <Navigate to="/" replace />;
   }
 

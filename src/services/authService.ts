@@ -1,64 +1,77 @@
-import { demoUsers } from "../data/data";
-import { registeredUsersKey } from "../constant/storageKey";
+import { getBaseUrl } from "../helpers/config/envConfig";
+import { instance } from "../helpers/axios/axiosInstance";
 import type {
+  IAuthResult,
+  IChangePasswordPayload,
   ILoginPayload,
   IRegisterPayload,
   IUser,
 } from "../types/auth";
-import { getStoredJson, setStoredJson } from "../utils/local-storage";
+import { removeUserInfo, setToLocalStorage } from "../utils/local-storage";
+import { authKey, userKey } from "../constant/storageKey";
 
-const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
+const AUTH_URL = `${getBaseUrl()}/api/v1/auth`;
 
-const simulateLatency = (ms = 500): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+interface ApiEnvelope<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
 
-const getRegisteredUsers = (): IUser[] =>
-  getStoredJson<IUser[]>(registeredUsersKey, []);
-
-const saveRegisteredUser = (user: IUser): void => {
-  setStoredJson(registeredUsersKey, [...getRegisteredUsers(), user]);
+const unwrap = async <T>(
+  promise: Promise<{ data: ApiEnvelope<T> }>
+): Promise<T> => {
+  const response = await promise;
+  return response.data.data;
 };
 
-export const login = async (payload: ILoginPayload): Promise<IUser> => {
-  await simulateLatency();
-  const email = payload.email.trim().toLowerCase();
-  const user = demoUsers.find(
-    (u) => u.email.toLowerCase() === email && u.password === payload.password
+export const login = async (payload: ILoginPayload): Promise<IAuthResult> => {
+  const data = await unwrap<{ accessToken: string }>(
+    instance.post(`${AUTH_URL}/login`, payload)
   );
-  if (!user) {
-    throw new Error("Invalid email or password. Try the demo accounts below.");
+
+  const token = data.accessToken;
+  if (!token) {
+    throw new Error("Login succeeded but no access token was returned.");
   }
-  return { id: user.id, name: user.name, email: user.email, role: user.role };
+
+  setToLocalStorage(authKey, token);
+
+  const user = await unwrap<IUser>(instance.get(`${AUTH_URL}/me`));
+
+  return { user, token };
 };
 
-export const register = async (payload: IRegisterPayload): Promise<IUser> => {
-  await simulateLatency();
-  const name = payload.name.trim();
-  const email = payload.email.trim().toLowerCase();
+export const register = async (payload: IRegisterPayload): Promise<IUser> =>
+  unwrap<IUser>(instance.post(`${AUTH_URL}/register`, payload));
 
-  if (name.length < 2) {
-    throw new Error("Name must be at least 2 characters long.");
-  }
-  if (!EMAIL_REGEX.test(email)) {
-    throw new Error("Please enter a valid email address.");
-  }
-  if (payload.password.length < 6) {
-    throw new Error("Password must be at least 6 characters long.");
-  }
+export const verifyEmail = async (token: string): Promise<IUser> =>
+  unwrap<IUser>(instance.get(`${AUTH_URL}/verify-email`, { params: { token } }));
 
-  const exists = [...demoUsers, ...getRegisteredUsers()].some(
-    (u) => u.email.toLowerCase() === email
+export const forgotPassword = async (email: string): Promise<void> => {
+  await unwrap<null>(instance.post(`${AUTH_URL}/forgot-password`, { email }));
+};
+
+export const resetPassword = async (
+  token: string,
+  password: string
+): Promise<void> => {
+  await unwrap<null>(
+    instance.post(`${AUTH_URL}/reset-password`, { password }, { params: { token } })
   );
-  if (exists) {
-    throw new Error("An account with this email already exists.");
-  }
+};
 
-  const newUser: IUser = {
-    id: `u-${Date.now()}`,
-    name,
-    email,
-    role: "user",
-  };
-  saveRegisteredUser(newUser);
-  return newUser;
+export const changePassword = async (
+  payload: IChangePasswordPayload
+): Promise<void> => {
+  await unwrap<null>(instance.post(`${AUTH_URL}/change-password`, payload));
+};
+
+export const logout = async (): Promise<void> => {
+  try {
+    await instance.post(`${AUTH_URL}/logout`);
+  } finally {
+    removeUserInfo(authKey);
+    removeUserInfo(userKey);
+  }
 };

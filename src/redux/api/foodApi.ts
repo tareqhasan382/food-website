@@ -1,47 +1,94 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "./baseApi";
+import type {
+  ICategory,
+  IFood,
+  IFoodsMeta,
+  IGetFoodsArgs,
+  IGetFoodsResult,
+} from "../../types/food";
+
+const unwrapData = <T>(response: unknown): T => {
+  const env = response as { data: T };
+  return env.data as T;
+};
+
 export const foodApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    addFood: build.mutation({
+    createFood: build.mutation<IFood, FormData | Record<string, unknown>>({
       query: (data) => ({
-        url: "/api/v1/create-food",
+        url: "/api/v1/foods",
         method: "POST",
-        data: data,
+        data,
+        formData: data instanceof FormData,
       }),
       invalidatesTags: ["food"],
+      transformResponse: (response: unknown): IFood => unwrapData<IFood>(response),
     }),
-    getFoods: build.query({
-      query: (arg: Record<string, any>) => ({
+
+    updateFood: build.mutation<
+      IFood,
+      { id: string; data: FormData | Record<string, unknown> }
+    >({
+      query: ({ id, data }) => ({
+        url: `/api/v1/foods/${id}`,
+        method: "PATCH",
+        data,
+        formData: data instanceof FormData,
+      }),
+      invalidatesTags: ["food"],
+      transformResponse: (response: unknown): IFood => unwrapData<IFood>(response),
+    }),
+
+    getFoods: build.query<IGetFoodsResult, IGetFoodsArgs>({
+      query: (arg) => ({
         url: "/api/v1/foods",
         method: "GET",
         params: arg,
       }),
       providesTags: ["food"],
+      transformResponse: (response: unknown): IGetFoodsResult => {
+        const env = response as { data?: IFood[]; meta?: IFoodsMeta };
+        return {
+          foods: env.data ?? [],
+          meta: env.meta ?? { page: 1, limit: 10, total: 0, totalPages: 0 },
+        };
+      },
     }),
-    getFood: build.query({
+
+    getFood: build.query<IFood, string>({
       query: (id) => ({
-        url: `/api/v1/food/${id}`,
+        url: `/api/v1/foods/${id}`,
         method: "GET",
       }),
+      providesTags: (_r, _e, id) => [{ type: "food", id }],
+      transformResponse: (response: unknown): IFood => unwrapData<IFood>(response),
     }),
+
     deleteFood: build.mutation<void, string>({
       query: (id) => ({
-        url: `/api/v1/food/${id}`,
+        url: `/api/v1/foods/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["food"],
-      // transformResponse: (response: ITrips) => {
-      //   return {
-      //     package: response, delete
-      //   };
-      // },
+    }),
+
+    getCategories: build.query<ICategory[], void>({
+      query: () => ({
+        url: "/api/v1/categories",
+        method: "GET",
+      }),
+      providesTags: ["category"],
+      transformResponse: (response: unknown): ICategory[] =>
+        unwrapData<ICategory[]>(response) ?? [],
     }),
   }),
 });
 
 export const {
-  useAddFoodMutation,
+  useCreateFoodMutation,
+  useUpdateFoodMutation,
   useGetFoodsQuery,
   useGetFoodQuery,
   useDeleteFoodMutation,
+  useGetCategoriesQuery,
 } = foodApi;

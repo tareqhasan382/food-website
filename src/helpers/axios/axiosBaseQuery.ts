@@ -15,20 +15,24 @@ export const axiosBaseQuery =
       params?: AxiosRequestConfig["params"];
       meta?: IMeta;
       contentType?: string;
+      formData?: boolean;
     },
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, contentType }) => {
+  async ({ url, method, data, params, contentType, formData }) => {
     try {
+      const isFormData = formData || data instanceof FormData;
       const result = await axiosInstance({
         url: baseUrl + url,
         method,
         data,
         params,
-        headers: {
-          "Content-Type": contentType || "application/json",
-        },
+        headers: isFormData
+          ? undefined
+          : {
+              "Content-Type": contentType || "application/json",
+            },
         withCredentials: true,
       });
       return result;

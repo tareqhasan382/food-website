@@ -3,6 +3,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   FaCartPlus,
   FaChevronDown,
+  FaClipboardList,
+  FaHeart,
+  FaLock,
   FaSignOutAlt,
   FaStore,
 } from "react-icons/fa";
@@ -10,7 +13,13 @@ import { IoSearch, IoCloseSharp } from "react-icons/io5";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { logout } from "../redux/authSlice";
+import { logout as logoutRequest } from "../services/authService";
+import { isAdminRole } from "../types/auth";
 import { toast } from "react-toastify";
+import CartDrawer from "./cart/CartDrawer";
+import { selectCartItemCount, clearCart } from "../redux/cardSlice";
+import { selectWishlistCount, clearWishlist } from "../redux/wishlistSlice";
+import { baseApi } from "../redux/api/baseApi";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -21,14 +30,14 @@ const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
-  const cartCount = useAppSelector((state) =>
-    state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
-  );
+  const cartCount = useAppSelector(selectCartItemCount);
+  const wishlistCount = useAppSelector(selectWishlistCount);
 
   const handleSearch = (e: React.FormEvent): void => {
     e.preventDefault();
@@ -38,10 +47,15 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = (): void => {
-    dispatch(logout());
-    toast.success("Logged out successfully");
-    setUserMenuOpen(false);
-    navigate("/");
+    void logoutRequest().finally(() => {
+      dispatch(logout());
+      dispatch(clearCart());
+      dispatch(clearWishlist());
+      dispatch(baseApi.util.resetApiState());
+      toast.success("Logged out successfully");
+      setUserMenuOpen(false);
+      navigate("/");
+    });
   };
 
   useEffect(() => {
@@ -58,7 +72,8 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 shadow-sm backdrop-blur">
+    <>
+      <header className="sticky top-0 z-40 bg-white/90 shadow-sm backdrop-blur">
       <div className="container-app flex items-center justify-between gap-4 py-3">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
@@ -110,7 +125,19 @@ const Navbar: React.FC = () => {
         {/* Actions */}
         <div className="flex items-center gap-2">
           <Link
-            to="/cart"
+            to="/wishlist"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-red-500 hover:text-white"
+            aria-label={`Wishlist, ${wishlistCount} items`}
+          >
+            <FaHeart size={18} />
+            {wishlistCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+          <button
+            onClick={() => setCartDrawerOpen(true)}
             className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-brand hover:text-white"
             aria-label={`Cart, ${cartCount} items`}
           >
@@ -120,7 +147,7 @@ const Navbar: React.FC = () => {
                 {cartCount}
               </span>
             )}
-          </Link>
+          </button>
 
           {user ? (
             <div className="relative" ref={userMenuRef}>
@@ -148,7 +175,7 @@ const Navbar: React.FC = () => {
                     </p>
                   </div>
                   <div className="pt-1">
-                    {user.role === "admin" && (
+                    {isAdminRole(user.role) && (
                       <Link
                         to="/dashboard"
                         onClick={() => setUserMenuOpen(false)}
@@ -158,6 +185,22 @@ const Navbar: React.FC = () => {
                         Dashboard
                       </Link>
                     )}
+                    <Link
+                      to="/orders"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-brand-50 hover:text-brand"
+                    >
+                      <FaClipboardList size={15} />
+                      My orders
+                    </Link>
+                    <Link
+                      to="/change-password"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-brand-50 hover:text-brand"
+                    >
+                      <FaLock size={15} />
+                      Change password
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
@@ -223,6 +266,24 @@ const Navbar: React.FC = () => {
                 {link.label}
               </NavLink>
             ))}
+            <NavLink
+              to="/wishlist"
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                `rounded-xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 ${
+                  isActive
+                    ? "bg-red-50 text-red-600"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`
+              }
+            >
+              <FaHeart size={14} /> Wishlist
+              {wishlistCount > 0 && (
+                <span className="ml-auto badge bg-red-100 text-red-600">
+                  {wishlistCount}
+                </span>
+              )}
+            </NavLink>
             {!user && (
               <div className="mt-2 flex gap-2 border-t border-gray-100 pt-3">
                 <Link
@@ -245,6 +306,11 @@ const Navbar: React.FC = () => {
         </div>
       )}
     </header>
+    <CartDrawer
+      isOpen={cartDrawerOpen}
+      onClose={() => setCartDrawerOpen(false)}
+    />
+    </>
   );
 };
 

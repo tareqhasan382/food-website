@@ -3,11 +3,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { IUser } from "../types/auth";
 import {
   getFromLocalStorage,
+  getStoredJson,
   removeUserInfo,
   setToLocalStorage,
+  setStoredJson,
 } from "../utils/local-storage";
-import { authKey } from "../constant/storageKey";
-import { tokenToUser } from "../utils/session";
+import { authKey, userKey } from "../constant/storageKey";
 
 interface AuthState {
   user: IUser | null;
@@ -17,7 +18,7 @@ interface AuthState {
 const token = getFromLocalStorage(authKey);
 
 const initialState: AuthState = {
-  user: tokenToUser(token),
+  user: getStoredJson<IUser | null>(userKey, null),
   token,
 };
 
@@ -25,18 +26,27 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials(state, action: PayloadAction<{ user: IUser; token: string }>) {
+    setCredentials(
+      state,
+      action: PayloadAction<{ user: IUser; token: string }>
+    ) {
       state.user = action.payload.user;
       state.token = action.payload.token;
       setToLocalStorage(authKey, action.payload.token);
+      setStoredJson(userKey, action.payload.user);
+    },
+    setUser(state, action: PayloadAction<IUser>) {
+      state.user = action.payload;
+      setStoredJson(userKey, action.payload);
     },
     logout(state) {
       state.user = null;
       state.token = null;
       removeUserInfo(authKey);
+      removeUserInfo(userKey);
     },
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, setUser, logout } = authSlice.actions;
 export default authSlice.reducer;

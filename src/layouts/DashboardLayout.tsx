@@ -1,22 +1,32 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
+  FaChartLine,
   FaChartPie,
   FaClipboardList,
-  FaPlusCircle,
   FaSignOutAlt,
   FaStore,
+  FaTags,
+  FaTicketAlt,
+  FaUsers,
+  FaUtensils,
 } from "react-icons/fa";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdClose } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { logout } from "../redux/authSlice";
+import { logout as logoutRequest } from "../services/authService";
+import { isAdminRole } from "../types/auth";
 import { toast } from "react-toastify";
 
 const navItems = [
-  { to: "/dashboard", label: "Overview", icon: FaChartPie, end: true },
-  { to: "/dashboard/foods", label: "All Foods", icon: FaClipboardList },
-  { to: "/dashboard/foods/new", label: "Add Food", icon: FaPlusCircle },
+  { to: "/dashboard", label: "Dashboard", icon: FaChartPie, end: true },
+  { to: "/dashboard/orders", label: "Orders", icon: FaClipboardList },
+  { to: "/dashboard/foods", label: "All Foods", icon: FaUtensils },
+  { to: "/dashboard/categories", label: "Categories", icon: FaTags },
+  { to: "/dashboard/users", label: "Users", icon: FaUsers },
+  { to: "/dashboard/coupons", label: "Coupons", icon: FaTicketAlt },
+  { to: "/dashboard/analytics", label: "Analytics", icon: FaChartLine },
 ];
 
 const DashboardLayout: React.FC = () => {
@@ -26,9 +36,11 @@ const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = (): void => {
-    dispatch(logout());
-    toast.success("Logged out successfully");
-    navigate("/");
+    void logoutRequest().finally(() => {
+      dispatch(logout());
+      toast.success("Logged out successfully");
+      navigate("/");
+    });
   };
 
   const sidebar = (
@@ -138,7 +150,7 @@ const DashboardLayout: React.FC = () => {
             Dashboard
           </h1>
           <span className="badge bg-brand-50 text-brand">
-            {user?.role === "admin" ? "Administrator" : "Member"}
+            {isAdminRole(user?.role) ? "Administrator" : "Member"}
           </span>
         </header>
 

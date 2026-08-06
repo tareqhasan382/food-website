@@ -1,16 +1,15 @@
 import type {
   ICategory,
-  IFood,
+  ILocalFood,
   IOrder,
   IPromotion,
   ITestimonial,
 } from "../types/food";
-import type { IDemoUser } from "../types/auth";
 
 const img = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=600&q=80`;
 
-export const foods: IFood[] = [
+export const foods: ILocalFood[] = [
   {
     id: "f1",
     name: "Classic Cheeseburger",
@@ -261,24 +260,38 @@ export const categories: ICategory[] = [
   },
   {
     id: "c4",
-    name: "Chicken",
-    slug: "chicken",
+    name: "Fast Food",
+    slug: "fastfood",
     image: img("photo-1626645738196-c2a7c87a8f58"),
     description: "Crispy, juicy & finger-licking",
   },
   {
     id: "c5",
+    name: "Breakfast",
+    slug: "breakfast",
+    image: img("photo-1533089860892-a7c6f0a88666"),
+    description: "Start the day right",
+  },
+  {
+    id: "c6",
     name: "Desserts",
     slug: "dessert",
     image: img("photo-1606313564200-e75d5e30476c"),
     description: "Sweet endings done right",
   },
   {
-    id: "c6",
+    id: "c7",
     name: "Drinks",
-    slug: "drinks",
+    slug: "drink",
     image: img("photo-1517701604599-bb29b565090c"),
     description: "Cold, fresh & refreshing",
+  },
+  {
+    id: "c8",
+    name: "Other",
+    slug: "other",
+    image: img("photo-1504674900247-0877df9cc836"),
+    description: "A little bit of everything",
   },
 ];
 
@@ -376,23 +389,6 @@ export const orders: IOrder[] = [
     total: 27.98,
     status: "cancelled",
     placedAt: "Yesterday, 6:12 PM",
-  },
-];
-
-export const demoUsers: IDemoUser[] = [
-  {
-    id: "u-admin",
-    name: "Admin User",
-    email: "admin@besteats.com",
-    password: "admin123",
-    role: "admin",
-  },
-  {
-    id: "u-user",
-    name: "Demo User",
-    email: "user@besteats.com",
-    password: "user123",
-    role: "user",
   },
 ];
 

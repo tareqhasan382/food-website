@@ -22,7 +22,7 @@ const FoodGrid: React.FC<FoodGridProps> = memo(({ foods }) => {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {foods.map((food) => (
-        <FoodCard key={food.id} food={food} />
+        <FoodCard key={food._id} food={food} />
       ))}
     </div>
   );

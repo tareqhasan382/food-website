@@ -1,14 +1,12 @@
-export type Role = "admin" | "user";
+export type Role = "admin" | "user" | "superAdmin";
 
 export interface IUser {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: Role;
-}
-
-export interface IDemoUser extends IUser {
-  password: string;
+  emailVerified?: boolean;
+  profileImg?: string;
 }
 
 export interface ILoginPayload {
@@ -22,10 +20,22 @@ export interface IRegisterPayload {
   password: string;
 }
 
+export interface IChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface ISessionPayload {
   userId: string;
   role: Role;
-  name: string;
   email: string;
   exp: number;
 }
+
+export interface IAuthResult {
+  user: IUser;
+  token: string;
+}
+
+export const isAdminRole = (role: Role | undefined): boolean =>
+  role === "admin" || role === "superAdmin";

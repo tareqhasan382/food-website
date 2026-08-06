@@ -1,27 +1,64 @@
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import { FaCartPlus, FaStar } from "react-icons/fa";
-import { useAppDispatch } from "../../redux/hooks";
-import { addToCart } from "../../redux/cardSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { addToCart, removeOne } from "../../redux/cardSlice";
+import { useAddItemToCartMutation } from "../../redux/api/cartApi";
 import type { IFood } from "../../types/food";
+import { toast } from "react-toastify";
+import { foodImage } from "../../utils/food-image";
+import WishlistHeartButton from "./WishlistHeartButton";
+import CategoryLabel from "../category/CategoryLabel";
 
 const FoodCard: React.FC<{ food: IFood }> = memo(({ food }) => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+  const isLoggedIn = !!user;
+  const [addItemServer] = useAddItemToCartMutation();
+
+  const soldOut = !food.availability || (food.stock ?? 0) <= 0;
+  const price = Number(food.price) || 0;
+  const discountPrice = Number(food.discountPrice) || 0;
+  const rating = Number(food.rating) || 0;
+  const ratingCount = Number(food.ratingCount) || 0;
+  const hasDiscount = discountPrice > 0 && discountPrice < price;
+
+  const handleAdd = async (e: React.MouseEvent): Promise<void> => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(addToCart(food));
+    if (isLoggedIn) {
+      try {
+        await addItemServer({ foodId: food._id, quantity: 1 }).unwrap();
+      } catch (err) {
+        dispatch(removeOne(food));
+        const msg =
+          (err as { data?: { message?: string } })?.data?.message ??
+          "Server sync failed";
+        toast.error(msg);
+      }
+    }
+  };
 
   return (
-    <div className="card group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <Link
+      to={`/food/${food._id}`}
+      className="card group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+    >
       <div className="relative h-44 overflow-hidden">
         <img
-          src={food.image}
+          src={foodImage(food)}
           alt={food.name}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        {food.featured && (
-          <span className="badge absolute left-3 top-3 bg-brand text-white shadow">
-            Featured
+        <WishlistHeartButton food={food} variant="card" />
+        {hasDiscount && (
+          <span className="badge absolute left-3 top-3 bg-red-500 text-white shadow">
+            Save ${(price - discountPrice).toFixed(2)}
           </span>
         )}
-        {!food.available && (
+        {soldOut && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60">
             <span className="badge bg-red-600 text-white">Sold out</span>
           </div>
@@ -35,12 +72,25 @@ const FoodCard: React.FC<{ food: IFood }> = memo(({ food }) => {
               {food.name}
             </h3>
             <p className="text-xs font-medium uppercase tracking-wide text-brand">
-              {food.category}
+              <CategoryLabel slug={food.category} />
             </p>
           </div>
-          <p className="shrink-0 text-lg font-extrabold text-gray-900">
-            ${food.price.toFixed(2)}
-          </p>
+          <div className="shrink-0 text-right">
+            {hasDiscount ? (
+              <>
+                <p className="text-lg font-extrabold text-gray-900">
+                  ${discountPrice.toFixed(2)}
+                </p>
+                <p className="text-xs font-medium text-gray-400 line-through">
+                  ${price.toFixed(2)}
+                </p>
+              </>
+            ) : (
+              <p className="text-lg font-extrabold text-gray-900">
+                ${price.toFixed(2)}
+              </p>
+            )}
+          </div>
         </div>
 
         <p className="mt-1 line-clamp-2 text-xs text-gray-500">
@@ -50,12 +100,14 @@ const FoodCard: React.FC<{ food: IFood }> = memo(({ food }) => {
         <div className="mt-3 flex items-center justify-between">
           <span className="flex items-center gap-1 text-sm font-semibold text-gray-700">
             <FaStar className="text-amber-400" />
-            {food.rating.toFixed(1)}
-            <span className="font-normal text-gray-400">({food.reviews})</span>
+            {rating.toFixed(1)}
+            <span className="font-normal text-gray-400">
+              ({ratingCount})
+            </span>
           </span>
           <button
-            onClick={() => dispatch(addToCart(food))}
-            disabled={!food.available}
+            onClick={handleAdd}
+            disabled={soldOut}
             className="btn-primary !px-3 !py-2"
             aria-label={`Add ${food.name} to cart`}
           >
@@ -64,7 +116,7 @@ const FoodCard: React.FC<{ food: IFood }> = memo(({ food }) => {
           </button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 });
 
