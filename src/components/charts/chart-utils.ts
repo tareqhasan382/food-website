@@ -24,3 +24,12 @@ export const shortDate = (iso: string): string => {
     day: "numeric",
   });
 };
+
+export const shortMonth = (ym: string): string => {
+  const [y, m] = ym.split("-").map(Number);
+  if (!y || !m) return ym;
+  return new Date(y, m - 1, 1).toLocaleDateString(undefined, {
+    month: "short",
+    year: "2-digit",
+  });
+};

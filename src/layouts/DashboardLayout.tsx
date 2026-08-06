@@ -4,6 +4,7 @@ import {
   FaChartLine,
   FaChartPie,
   FaClipboardList,
+  FaFileAlt,
   FaSignOutAlt,
   FaStore,
   FaTags,
@@ -27,6 +28,7 @@ const navItems = [
   { to: "/dashboard/users", label: "Users", icon: FaUsers },
   { to: "/dashboard/coupons", label: "Coupons", icon: FaTicketAlt },
   { to: "/dashboard/analytics", label: "Analytics", icon: FaChartLine },
+  { to: "/dashboard/reports", label: "Reports", icon: FaFileAlt },
 ];
 
 const DashboardLayout: React.FC = () => {

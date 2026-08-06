@@ -34,6 +34,31 @@ export interface BestSellingFood {
   revenue: number;
 }
 
+export interface DailySalesPoint {
+  date: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface MonthlySalesPoint {
+  month: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface CategorySalesPoint {
+  category: string;
+  revenue: number;
+  quantity: number;
+}
+
+export interface CouponUsagePoint {
+  code: string;
+  uses: number;
+  discount: number;
+  subtotal: number;
+}
+
 export interface AdminUser {
   _id: string;
   name: string;

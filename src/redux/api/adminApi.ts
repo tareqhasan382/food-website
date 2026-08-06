@@ -1,7 +1,11 @@
 import { baseApi } from "./baseApi";
 import type {
   BestSellingFood,
+  CategorySalesPoint,
+  CouponUsagePoint,
+  DailySalesPoint,
   DashboardOverview,
+  MonthlySalesPoint,
   OrdersPoint,
   RevenuePoint,
   UsersPoint,
@@ -67,6 +71,56 @@ export const adminApi = baseApi.injectEndpoints({
       transformResponse: (response: unknown): BestSellingFood[] =>
         unwrapData<BestSellingFood[]>(response) ?? [],
     }),
+
+    getDailySales: build.query<DailySalesPoint[], number>({
+      query: (days) => ({
+        url: "/api/v1/admin/dashboard/sales/daily",
+        method: "GET",
+        params: { days },
+      }),
+      providesTags: ["dashboard"],
+      transformResponse: (response: unknown): DailySalesPoint[] =>
+        unwrapData<DailySalesPoint[]>(response) ?? [],
+    }),
+
+    getMonthlySales: build.query<MonthlySalesPoint[], number>({
+      query: (months) => ({
+        url: "/api/v1/admin/dashboard/sales/monthly",
+        method: "GET",
+        params: { months },
+      }),
+      providesTags: ["dashboard"],
+      transformResponse: (response: unknown): MonthlySalesPoint[] =>
+        unwrapData<MonthlySalesPoint[]>(response) ?? [],
+    }),
+
+    getCategorySales: build.query<
+      CategorySalesPoint[],
+      { days?: number; limit?: number }
+    >({
+      query: (args) => ({
+        url: "/api/v1/admin/dashboard/reports/category-sales",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["dashboard"],
+      transformResponse: (response: unknown): CategorySalesPoint[] =>
+        unwrapData<CategorySalesPoint[]>(response) ?? [],
+    }),
+
+    getCouponUsage: build.query<
+      CouponUsagePoint[],
+      { days?: number; limit?: number }
+    >({
+      query: (args) => ({
+        url: "/api/v1/admin/dashboard/reports/coupon-usage",
+        method: "GET",
+        params: args,
+      }),
+      providesTags: ["dashboard"],
+      transformResponse: (response: unknown): CouponUsagePoint[] =>
+        unwrapData<CouponUsagePoint[]>(response) ?? [],
+    }),
   }),
 });
 
@@ -76,4 +130,8 @@ export const {
   useGetOrdersChartQuery,
   useGetUsersChartQuery,
   useGetBestSellingFoodsQuery,
+  useGetDailySalesQuery,
+  useGetMonthlySalesQuery,
+  useGetCategorySalesQuery,
+  useGetCouponUsageQuery,
 } = adminApi;

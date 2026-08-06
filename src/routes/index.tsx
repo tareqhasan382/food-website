@@ -47,6 +47,7 @@ const CategoriesPage = lazy(() => import("../pages/dashboard/CategoriesPage"));
 const UsersPage = lazy(() => import("../pages/dashboard/UsersPage"));
 const CouponsPage = lazy(() => import("../pages/dashboard/CouponsPage"));
 const AnalyticsPage = lazy(() => import("../pages/dashboard/AnalyticsPage"));
+const ReportsPage = lazy(() => import("../pages/dashboard/ReportsPage"));
 
 const withLoader = (node: ReactNode): ReactNode => (
   <Suspense fallback={<PageLoader />}>{node}</Suspense>
@@ -111,6 +112,7 @@ const routes = createBrowserRouter([
           { path: "users", element: withLoader(<UsersPage />) },
           { path: "coupons", element: withLoader(<CouponsPage />) },
           { path: "analytics", element: withLoader(<AnalyticsPage />) },
+          { path: "reports", element: withLoader(<ReportsPage />) },
         ],
       },
     ],
