@@ -13,7 +13,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
   right,
   children,
 }) => (
-  <div className="card flex flex-col p-5">
+  <div className="card flex min-w-0 flex-col p-5">
     <div className="mb-4 flex items-start justify-between gap-3">
       <div>
         <h3 className="font-display text-base font-bold text-gray-900">

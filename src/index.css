@@ -39,6 +39,13 @@
   select option:disabled {
     @apply bg-gray-100 text-gray-400;
   }
+
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  progress {
+    @apply accent-brand;
+  }
 }
 
 @layer utilities {

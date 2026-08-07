@@ -74,13 +74,13 @@ const Navbar: React.FC = () => {
   return (
     <>
       <header className="sticky top-0 z-40 bg-white/90 shadow-sm backdrop-blur">
-      <div className="container-app flex items-center justify-between gap-4 py-3">
+      <div className="container-app flex items-center justify-between gap-3 py-3 sm:gap-4">
         {/* Brand */}
-        <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg text-white">
+        <Link to="/" className="flex shrink-0 items-center gap-2" onClick={() => setMobileOpen(false)}>
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand text-base text-white sm:h-9 sm:w-9 sm:text-lg">
             <FaStore />
           </span>
-          <span className="font-display text-2xl font-bold tracking-tight text-gray-900">
+          <span className="font-display text-lg font-bold tracking-tight text-gray-900 sm:text-2xl">
             Best<span className="text-brand">Eats</span>
           </span>
         </Link>
@@ -123,13 +123,13 @@ const Navbar: React.FC = () => {
         </form>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             to="/wishlist"
-            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-red-500 hover:text-white"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-red-500 hover:text-white sm:h-10 sm:w-10"
             aria-label={`Wishlist, ${wishlistCount} items`}
           >
-            <FaHeart size={18} />
+            <FaHeart size={17} className="sm:h-[18px] sm:w-[18px]" />
             {wishlistCount > 0 && (
               <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white">
                 {wishlistCount}
@@ -138,10 +138,10 @@ const Navbar: React.FC = () => {
           </Link>
           <button
             onClick={() => setCartDrawerOpen(true)}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-brand hover:text-white"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-700 transition-colors hover:bg-brand hover:text-white sm:h-10 sm:w-10"
             aria-label={`Cart, ${cartCount} items`}
           >
-            <FaCartPlus size={18} />
+            <FaCartPlus size={17} className="sm:h-[18px] sm:w-[18px]" />
             {cartCount > 0 && (
               <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1 text-[11px] font-bold text-white">
                 {cartCount}
@@ -153,7 +153,7 @@ const Navbar: React.FC = () => {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen((v) => !v)}
-                className="flex items-center gap-2 rounded-full bg-gray-100 py-1 pl-1 pr-3 transition-colors hover:bg-gray-200"
+                className="flex items-center gap-2 rounded-full bg-gray-100 p-0.5 transition-colors hover:bg-gray-200 sm:py-1 sm:pl-1 sm:pr-3"
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
                   {user.name?.[0]?.toUpperCase()}
@@ -161,7 +161,7 @@ const Navbar: React.FC = () => {
                 <span className="hidden text-sm font-semibold text-gray-700 sm:block">
                   {user.name?.split(" ")[0]}
                 </span>
-                <FaChevronDown size={12} className="text-gray-500" />
+                <FaChevronDown size={12} className="hidden text-gray-500 sm:block" />
               </button>
 
               {userMenuOpen && (
@@ -226,10 +226,10 @@ const Navbar: React.FC = () => {
           {/* Mobile menu toggle */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-700 md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-700 md:hidden sm:h-10 sm:w-10"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <IoCloseSharp size={22} /> : <HiMenuAlt3 size={22} />}
+            {mobileOpen ? <IoCloseSharp size={21} /> : <HiMenuAlt3 size={21} />}
           </button>
         </div>
       </div>

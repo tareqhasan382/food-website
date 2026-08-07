@@ -64,12 +64,12 @@ const AnalyticsPage: React.FC = () => {
             Revenue, orders, user growth and top-selling items.
           </p>
         </div>
-        <div className="flex rounded-full bg-gray-100 p-1">
+        <div className="flex flex-wrap rounded-full bg-gray-100 p-1">
           {RANGES.map((range) => (
             <button
               key={range}
               onClick={() => setDays(range)}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-sm font-semibold transition-colors sm:px-4 ${
                 days === range
                   ? "bg-white text-brand shadow-sm"
                   : "text-gray-500 hover:text-gray-700"
@@ -83,36 +83,36 @@ const AnalyticsPage: React.FC = () => {
 
       {/* Summary strip */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">Revenue (last {days}d)</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Revenue (last {days}d)</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {formatCurrency(totalRevenue)}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand">
             $
           </span>
         </div>
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">Orders (last {days}d)</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Orders (last {days}d)</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {totalOrders}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
             #
           </span>
         </div>
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">New users (last {days}d)</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">New users (last {days}d)</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {totalUsers}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
             +
           </span>
         </div>

@@ -344,7 +344,7 @@ const MenuPage: React.FC = () => {
                   type="checkbox"
                   checked={availableOnly}
                   onChange={handleAvailabilityChange}
-                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                  className="h-4 w-4 rounded border-gray-300 accent-brand focus:ring-brand"
                 />
                 <span className="text-sm text-gray-600">Available Only</span>
               </label>

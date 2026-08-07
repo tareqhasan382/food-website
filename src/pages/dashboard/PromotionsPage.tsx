@@ -422,7 +422,7 @@ const PromotionsPage: React.FC = () => {
                   <label className="flex items-center gap-2 font-semibold text-gray-700">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                      className="h-4 w-4 rounded border-gray-300 accent-brand focus:ring-brand"
                       {...register("isActive")}
                     />
                     Active

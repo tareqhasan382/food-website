@@ -154,7 +154,7 @@ const ReportsPage: React.FC = () => {
             <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               Monthly trend
             </span>
-            <div className="flex rounded-full bg-gray-100 p-1">
+            <div className="flex flex-wrap rounded-full bg-gray-100 p-1">
               {MONTH_RANGES.map((range) => (
                 <button
                   key={range}
@@ -174,7 +174,7 @@ const ReportsPage: React.FC = () => {
             <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
               Detail window
             </span>
-            <div className="flex rounded-full bg-gray-100 p-1">
+            <div className="flex flex-wrap rounded-full bg-gray-100 p-1">
               {DAY_RANGES.map((range) => (
                 <button
                   key={range}
@@ -194,58 +194,58 @@ const ReportsPage: React.FC = () => {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">Revenue ({days}d)</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Revenue ({days}d)</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {formatCurrency(kpis.totalRevenue)}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand">
             <FaDollarSign />
           </span>
         </div>
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">Orders ({days}d)</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Orders ({days}d)</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {formatCompactNumber(kpis.totalOrders)}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
             <FaShoppingBag />
           </span>
         </div>
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">Avg order value</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Avg order value</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {formatCurrency(kpis.aov)}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
             <FaChartLine />
           </span>
         </div>
-        <div className="card flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-gray-500">Coupons used</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Coupons used</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {formatCompactNumber(kpis.couponUses)}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
             <FaTicketAlt />
           </span>
         </div>
-        <div className="card flex items-center justify-between p-5 sm:col-span-2 xl:col-span-1">
-          <div>
-            <p className="text-sm text-gray-500">Discount given</p>
-            <p className="font-display text-2xl font-bold text-gray-900">
+        <div className="card flex min-w-0 items-center justify-between gap-4 p-5 sm:col-span-2 xl:col-span-1">
+          <div className="min-w-0">
+            <p className="truncate text-sm text-gray-500">Discount given</p>
+            <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
               {formatCurrency(kpis.couponDiscount)}
             </p>
           </div>
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
             <FaPercentage />
           </span>
         </div>

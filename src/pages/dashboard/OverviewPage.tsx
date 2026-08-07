@@ -121,17 +121,17 @@ const OverviewPage: React.FC = () => {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => (
-          <div key={stat.label} className="card flex items-center gap-4 p-5">
+          <div key={stat.label} className="card flex min-w-0 items-center gap-4 p-5">
             <span
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${stat.bg} text-lg text-white`}
             >
               <stat.icon />
             </span>
-            <div>
-              <p className="font-display text-2xl font-bold text-gray-900">
+            <div className="min-w-0">
+              <p className="truncate font-display text-xl font-bold text-gray-900 sm:text-2xl">
                 {stat.value}
               </p>
-              <p className="text-sm text-gray-500">{stat.label}</p>
+              <p className="truncate text-sm text-gray-500">{stat.label}</p>
             </div>
           </div>
         ))}

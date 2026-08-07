@@ -95,7 +95,7 @@ const WishlistHeartButton: React.FC<WishlistHeartButtonProps> = ({
           className={`transition-all duration-300 ${
             isSaved
               ? "fill-red-500 text-red-500 scale-100"
-              : "fill-transparent text-gray-500 group-hover:text-red-400"
+              : " text-gray-500 outline-1 group-hover:text-red-400"
           }`}
         />
         {burst && (
