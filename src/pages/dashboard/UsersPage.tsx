@@ -5,7 +5,8 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import { confirmToast } from "../../utils/confirmToast";
 import Spinner from "../../components/ui/Spinner";
 import EmptyState from "../../components/ui/EmptyState";
 import {
@@ -59,22 +60,26 @@ const UsersPage: React.FC = () => {
   const totalPages = meta?.totalPages ?? 1;
 
   const handleDelete = async (user: AdminUser): Promise<void> => {
-    const confirmed = window.confirm(
-      `Delete user "${user.name}" (${user.email})? This cannot be undone.`
-    );
-    if (!confirmed) return;
-    try {
-      await deleteUser(user._id).unwrap();
-      toast.success(`${user.name} deleted successfully`);
-      if (users.length === 1 && page > 1) {
-        setPage((p) => Math.max(1, p - 1));
+    confirmToast(
+      {
+        title: `Delete user "${user.name}" (${user.email})?`,
+        description: "This cannot be undone.",
+      },
+      async () => {
+        try {
+          await deleteUser(user._id).unwrap();
+          toast.success(`${user.name} deleted successfully`);
+          if (users.length === 1 && page > 1) {
+            setPage((p) => Math.max(1, p - 1));
+          }
+        } catch (err) {
+          const msg =
+            (err as { data?: { message?: string } })?.data?.message ??
+            "Failed to delete user";
+          toast.error(msg);
+        }
       }
-    } catch (err) {
-      const msg =
-        (err as { data?: { message?: string } })?.data?.message ??
-        "Failed to delete user";
-      toast.error(msg);
-    }
+    );
   };
 
   return (

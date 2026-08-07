@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { logout } from "../redux/authSlice";
 import { logout as logoutRequest } from "../services/authService";
 import { isAdminRole } from "../types/auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: FaChartPie, end: true },

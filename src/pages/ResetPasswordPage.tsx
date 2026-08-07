@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { resetPassword } from "../services/authService";
 import Spinner from "../components/ui/Spinner";
 import PasswordInput from "../components/ui/PasswordInput";

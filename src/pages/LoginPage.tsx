@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { FaEnvelope } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { login } from "../services/authService";
 import { setCredentials } from "../redux/authSlice";
 import { useAppDispatch } from "../redux/hooks";

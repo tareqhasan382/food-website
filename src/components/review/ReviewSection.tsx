@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaCommentDots, FaLock, FaPen, FaTrashAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useAppSelector } from "../../redux/hooks";
 import {
   useDeleteReviewMutation,

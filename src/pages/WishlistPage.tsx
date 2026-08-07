@@ -7,7 +7,7 @@ import {
   FaShoppingBag,
   FaTrash,
 } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import FoodCard from "../components/food/FoodCard";
 import EmptyState from "../components/ui/EmptyState";
 import Spinner from "../components/ui/Spinner";

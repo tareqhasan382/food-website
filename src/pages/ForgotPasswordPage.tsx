@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { FaEnvelope } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { forgotPassword } from "../services/authService";
 import Spinner from "../components/ui/Spinner";
 import AuthCard from "../components/auth/AuthCard";

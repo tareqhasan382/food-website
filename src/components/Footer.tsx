@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaTwitter, FaStore } from "react-icons/fa";
 import { IoMail, IoCall, IoLocationSharp } from "react-icons/io5";
 import { brand } from "../constant/brand";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState("");

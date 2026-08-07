@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { cartKey, cartCouponKey } from "../constant/storageKey";
 import type { IFood, ICartItem, IAppliedCoupon } from "../types/food";
 import { getStoredJson, setStoredJson } from "../utils/local-storage";
@@ -94,7 +94,7 @@ const cartSlice = createSlice({
       const existing = state.items.find((i) => i._id === action.payload._id);
       if (existing) {
         existing.quantity += 1;
-        toast.info(`${action.payload.name} quantity increased`);
+        toast(`${action.payload.name} quantity increased`);
       } else {
         state.items.push({ ...action.payload, quantity: 1 });
         toast.success(`${action.payload.name} added to cart`);
@@ -123,7 +123,7 @@ const cartSlice = createSlice({
       if (existing) {
         if (quantity <= 0) {
           state.items = state.items.filter((i) => i._id !== foodId);
-          toast.error(`${existing.name} removed from cart`, { icon: false });
+          toast.error(`${existing.name} removed from cart`);
         } else {
           existing.quantity = quantity;
         }
@@ -136,9 +136,7 @@ const cartSlice = createSlice({
         existing.quantity -= 1;
       } else {
         state.items = state.items.filter((i) => i._id !== action.payload._id);
-        toast.error(`${action.payload.name} removed from cart`, {
-          icon: false,
-        });
+        toast.error(`${action.payload.name} removed from cart`);
       }
       persist(state.items);
     },
@@ -146,7 +144,7 @@ const cartSlice = createSlice({
       const existing = state.items.find((i) => i._id === action.payload._id);
       state.items = state.items.filter((i) => i._id !== action.payload._id);
       if (existing) {
-        toast.error(`${existing.name} removed from cart`, { icon: false });
+        toast.error(`${existing.name} removed from cart`);
       }
       persist(state.items);
     },
@@ -163,7 +161,7 @@ const cartSlice = createSlice({
     },
     removeLocalCoupon(state) {
       if (state.coupon) {
-        toast.info(`Coupon ${state.coupon.code} removed`);
+        toast(`Coupon ${state.coupon.code} removed`);
       }
       state.coupon = null;
       persistCoupon(null);

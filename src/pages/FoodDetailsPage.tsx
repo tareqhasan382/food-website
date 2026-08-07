@@ -18,7 +18,7 @@ import { useAddItemToCartMutation } from "../redux/api/cartApi";
 import ErrorState from "../components/ui/ErrorState";
 import EmptyState from "../components/ui/EmptyState";
 import CategoryLabel from "../components/category/CategoryLabel";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { foodImage } from "../utils/food-image";
 import WishlistHeartButton from "../components/food/WishlistHeartButton";
 import ReviewSection from "../components/review/ReviewSection";

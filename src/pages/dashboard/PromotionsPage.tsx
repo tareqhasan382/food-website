@@ -9,7 +9,8 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import { confirmToast } from "../../utils/confirmToast";
 import Spinner from "../../components/ui/Spinner";
 import EmptyState from "../../components/ui/EmptyState";
 import {
@@ -145,19 +146,23 @@ const PromotionsPage: React.FC = () => {
   };
 
   const handleDelete = async (promo: IPromotion): Promise<void> => {
-    const confirmed = window.confirm(
-      `Delete promotion "${promo.title}"? This cannot be undone.`
+    confirmToast(
+      {
+        title: `Delete promotion "${promo.title}"?`,
+        description: "This cannot be undone.",
+      },
+      async () => {
+        try {
+          await deletePromotion(promo._id).unwrap();
+          toast.success(`${promo.title} deleted successfully`);
+        } catch (err) {
+          const msg =
+            (err as { data?: { message?: string } })?.data?.message ??
+            "Failed to delete promotion";
+          toast.error(msg);
+        }
+      }
     );
-    if (!confirmed) return;
-    try {
-      await deletePromotion(promo._id).unwrap();
-      toast.success(`${promo.title} deleted successfully`);
-    } catch (err) {
-      const msg =
-        (err as { data?: { message?: string } })?.data?.message ??
-        "Failed to delete promotion";
-      toast.error(msg);
-    }
   };
 
   const submitting = isCreating || isUpdating;

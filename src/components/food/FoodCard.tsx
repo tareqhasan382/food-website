@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { addToCart, removeOne } from "../../redux/cardSlice";
 import { useAddItemToCartMutation } from "../../redux/api/cartApi";
 import type { IFood } from "../../types/food";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { foodImage } from "../../utils/food-image";
 import WishlistHeartButton from "./WishlistHeartButton";
 import CategoryLabel from "../category/CategoryLabel";

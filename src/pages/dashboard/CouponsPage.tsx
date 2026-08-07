@@ -11,7 +11,8 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import { confirmToast } from "../../utils/confirmToast";
 import Spinner from "../../components/ui/Spinner";
 import EmptyState from "../../components/ui/EmptyState";
 import Select from "../../components/ui/Select";
@@ -181,22 +182,26 @@ const CouponsPage: React.FC = () => {
   };
 
   const handleDelete = async (coupon: AdminCoupon): Promise<void> => {
-    const confirmed = window.confirm(
-      `Delete coupon "${coupon.code}"? This cannot be undone.`
-    );
-    if (!confirmed) return;
-    try {
-      await deleteCoupon(coupon._id).unwrap();
-      toast.success(`${coupon.code} deleted successfully`);
-      if (coupons.length === 1 && page > 1) {
-        setPage((p) => Math.max(1, p - 1));
+    confirmToast(
+      {
+        title: `Delete coupon "${coupon.code}"?`,
+        description: "This cannot be undone.",
+      },
+      async () => {
+        try {
+          await deleteCoupon(coupon._id).unwrap();
+          toast.success(`${coupon.code} deleted successfully`);
+          if (coupons.length === 1 && page > 1) {
+            setPage((p) => Math.max(1, p - 1));
+          }
+        } catch (err) {
+          const msg =
+            (err as { data?: { message?: string } })?.data?.message ??
+            "Failed to delete coupon";
+          toast.error(msg);
+        }
       }
-    } catch (err) {
-      const msg =
-        (err as { data?: { message?: string } })?.data?.message ??
-        "Failed to delete coupon";
-      toast.error(msg);
-    }
+    );
   };
 
   const submitting = isCreating || isUpdating;

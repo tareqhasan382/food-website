@@ -12,7 +12,7 @@ import {
   FaXmark,
 } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   FREE_DELIVERY_THRESHOLD,
@@ -110,7 +110,7 @@ const CartPage: React.FC = () => {
 
   const handleCheckout = (): void => {
     if (!isLoggedIn) {
-      toast.info("Please log in to checkout.");
+      toast("Please log in to checkout.");
       navigate("/login");
       return;
     }
@@ -121,7 +121,7 @@ const CartPage: React.FC = () => {
     const trimmed = code.trim();
     if (!trimmed) return;
     if (!isLoggedIn) {
-      toast.info("Please log in to use coupons.");
+      toast("Please log in to use coupons.");
       navigate("/login");
       return;
     }

@@ -34,7 +34,7 @@ import {
 import type { ICartItem } from "../../types/food";
 import { foodImage } from "../../utils/food-image";
 import Spinner from "../ui/Spinner";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 interface CartDrawerProps {
   isOpen: boolean;

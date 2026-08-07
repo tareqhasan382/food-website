@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { logout } from "../redux/authSlice";
 import { logout as logoutRequest } from "../services/authService";
 import { isAdminRole } from "../types/auth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import CartDrawer from "./cart/CartDrawer";
 import { selectCartItemCount, clearCart } from "../redux/cardSlice";
 import { selectWishlistCount, clearWishlist } from "../redux/wishlistSlice";

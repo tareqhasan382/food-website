@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { FaCheckCircle, FaShoppingBag } from "react-icons/fa";
 import { FaHourglassHalf } from "react-icons/fa6";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import {
   useGetPaymentByIdQuery,
   useVerifyPaymentMutation,

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { FaEdit, FaImage, FaPlus, FaTrash } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import { confirmToast } from "../../utils/confirmToast";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import Spinner from "../../components/ui/Spinner";
@@ -137,16 +138,22 @@ const CategoriesPage: React.FC = () => {
   };
 
   const handleDelete = async (cat: ICategoryResponse): Promise<void> => {
-    const confirmed = window.confirm(`Delete category "${cat.name}"? This cannot be undone.`);
-    if (!confirmed) return;
-    try {
-      await deleteCategory(cat._id).unwrap();
-      toast.success(`"${cat.name}" deleted successfully`);
-    } catch (err) {
-      const msg =
-        (err as { data?: { message?: string } })?.data?.message ?? "Failed to delete category";
-      toast.error(msg);
-    }
+    confirmToast(
+      {
+        title: `Delete category "${cat.name}"?`,
+        description: "This cannot be undone.",
+      },
+      async () => {
+        try {
+          await deleteCategory(cat._id).unwrap();
+          toast.success(`"${cat.name}" deleted successfully`);
+        } catch (err) {
+          const msg =
+            (err as { data?: { message?: string } })?.data?.message ?? "Failed to delete category";
+          toast.error(msg);
+        }
+      }
+    );
   };
 
   const filtered = (categories ?? []).filter((c) =>

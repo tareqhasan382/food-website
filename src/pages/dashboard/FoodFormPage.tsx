@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFieldArray, useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { FaImage, FaPlus, FaSave, FaTrash, FaUndo } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import Spinner from "../../components/ui/Spinner";
 import ErrorState from "../../components/ui/ErrorState";
 import Select from "../../components/ui/Select";

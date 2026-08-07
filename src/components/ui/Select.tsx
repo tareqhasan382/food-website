@@ -109,6 +109,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     // Mirror the DOM value back into state when it changes externally
     // (e.g. react-hook-form sets the native select value on mount/reset).
+    // Runs on every render on purpose so external DOM mutations are picked up.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
       if (value === undefined && selectRef.current) {
         const domValue = normalize(selectRef.current.value);

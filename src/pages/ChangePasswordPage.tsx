@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { changePassword } from "../services/authService";
 import { useAppSelector } from "../redux/hooks";
 import Spinner from "../components/ui/Spinner";

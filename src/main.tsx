@@ -6,21 +6,20 @@ import { store } from "./redux/store.ts";
 import { RouterProvider } from "react-router-dom";
 import routes from "./routes/index.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
       <Provider store={store}>
-        <ToastContainer
-          position="top-right"
-          autoClose={2500}
-          newestOnTop
-          closeOnClick
-          pauseOnFocusLoss
-          pauseOnHover
-          theme="light"
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            duration: 2500,
+            style: {
+              borderRadius: "9999px",
+            },
+          }}
         />
         <RouterProvider router={routes} />
       </Provider>

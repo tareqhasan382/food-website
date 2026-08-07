@@ -12,7 +12,7 @@ import {
   FaTag,
   FaXmark,
 } from "react-icons/fa6";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import {
   useCancelOrderMutation,
   useGetOrderByIdQuery,

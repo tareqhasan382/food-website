@@ -8,7 +8,8 @@ import {
   FaSearch,
   FaTrash,
 } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+import { confirmToast } from "../../utils/confirmToast";
 import EmptyState from "../../components/ui/EmptyState";
 import Spinner from "../../components/ui/Spinner";
 import Select from "../../components/ui/Select";
@@ -51,20 +52,23 @@ const FoodsPage: React.FC = () => {
   const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil(foods.length / PAGE_SIZE));
 
   const handleDelete = async (id: string, name: string): Promise<void> => {
-    const confirmed = window.confirm(`Delete "${name}" from the menu? This cannot be undone.`);
-    if (!confirmed) return;
-    try {
-      await deleteFood(id).unwrap();
-      toast.success(`${name} deleted successfully`);
-      if (foods.length === 1 && page > 1) {
-        setPage((p) => Math.max(1, p - 1));
+    confirmToast(
+      { title: `Delete "${name}" from the menu?`, description: "This cannot be undone." },
+      async () => {
+        try {
+          await deleteFood(id).unwrap();
+          toast.success(`${name} deleted successfully`);
+          if (foods.length === 1 && page > 1) {
+            setPage((p) => Math.max(1, p - 1));
+          }
+        } catch (err) {
+          const msg =
+            (err as { data?: { message?: string } })?.data?.message ??
+            "Failed to delete food item";
+          toast.error(msg);
+        }
       }
-    } catch (err) {
-      const msg =
-        (err as { data?: { message?: string } })?.data?.message ??
-        "Failed to delete food item";
-      toast.error(msg);
-    }
+    );
   };
 
   return (

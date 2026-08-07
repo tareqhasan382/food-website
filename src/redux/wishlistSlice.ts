@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { wishlistKey } from "../constant/storageKey";
 import type { IFood } from "../types/food";
 import { getStoredJson, setStoredJson } from "../utils/local-storage";
@@ -35,7 +35,7 @@ const wishlistSlice = createSlice({
       if (!exists) {
         state.items.push(action.payload);
         toast.success(`${action.payload.name} added to wishlist`, {
-          toastId: `wishlist-add-${action.payload._id}`,
+          id: `wishlist-add-${action.payload._id}`,
         });
         persist(state.items);
       }
@@ -44,8 +44,8 @@ const wishlistSlice = createSlice({
       const found = state.items.find((i) => i._id === action.payload);
       state.items = state.items.filter((i) => i._id !== action.payload);
       if (found) {
-        toast.info(`${found.name} removed from wishlist`, {
-          toastId: `wishlist-remove-${action.payload}`,
+        toast(`${found.name} removed from wishlist`, {
+          id: `wishlist-remove-${action.payload}`,
         });
       }
       persist(state.items);
@@ -54,13 +54,13 @@ const wishlistSlice = createSlice({
       const exists = state.items.some((i) => i._id === action.payload._id);
       if (exists) {
         state.items = state.items.filter((i) => i._id !== action.payload._id);
-        toast.info(`${action.payload.name} removed from wishlist`, {
-          toastId: `wishlist-toggle-${action.payload._id}`,
+        toast(`${action.payload.name} removed from wishlist`, {
+          id: `wishlist-toggle-${action.payload._id}`,
         });
       } else {
         state.items.push(action.payload);
         toast.success(`${action.payload.name} added to wishlist`, {
-          toastId: `wishlist-toggle-${action.payload._id}`,
+          id: `wishlist-toggle-${action.payload._id}`,
         });
       }
       persist(state.items);
