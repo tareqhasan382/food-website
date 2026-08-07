@@ -9,6 +9,7 @@ import {
 import { toast } from "react-toastify";
 import Spinner from "../../components/ui/Spinner";
 import EmptyState from "../../components/ui/EmptyState";
+import Select from "../../components/ui/Select";
 import {
   useGetAdminOrdersQuery,
   useGetOrderStatsQuery,
@@ -215,7 +216,7 @@ const OrdersPage: React.FC = () => {
                         </td>
                         <td className="px-5 py-3">
                           {transitions.length > 0 ? (
-                            <select
+                            <Select
                               value={order.status}
                               onChange={(e) =>
                                 void handleStatusChange(
@@ -224,7 +225,8 @@ const OrdersPage: React.FC = () => {
                                 )
                               }
                               disabled={isUpdating}
-                              className="input !w-auto !rounded-lg !px-3 !py-1.5 text-xs"
+                              variant="sm"
+                              className="!w-auto"
                               aria-label={`Update status for ${order.orderNumber}`}
                             >
                               <option value={order.status} disabled>
@@ -235,7 +237,7 @@ const OrdersPage: React.FC = () => {
                                   {ORDER_STATUS_LABELS[t]}
                                 </option>
                               ))}
-                            </select>
+                            </Select>
                           ) : (
                             <span className="text-xs text-gray-400">
                               No updates

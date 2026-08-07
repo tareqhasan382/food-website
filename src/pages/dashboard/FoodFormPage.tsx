@@ -6,6 +6,7 @@ import { FaImage, FaPlus, FaSave, FaTrash, FaUndo } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Spinner from "../../components/ui/Spinner";
 import ErrorState from "../../components/ui/ErrorState";
+import Select from "../../components/ui/Select";
 import {
   useCreateFoodMutation,
   useGetFoodQuery,
@@ -325,9 +326,9 @@ const FoodFormPage: React.FC = () => {
             <label htmlFor="category" className="label">
               Category
             </label>
-            <select
+            <Select
               id="category"
-              className="input capitalize"
+              selectClassName="capitalize"
               {...register("category", { required: "Category is required" })}
             >
               <option value="" disabled>
@@ -338,7 +339,7 @@ const FoodFormPage: React.FC = () => {
                   {cat.name}
                 </option>
               ))}
-            </select>
+            </Select>
             {errors.category && (
               <p className="field-error">{errors.category.message}</p>
             )}

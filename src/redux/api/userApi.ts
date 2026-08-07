@@ -1,11 +1,5 @@
 import { baseApi } from "./baseApi";
-import type { Role } from "../../types/auth";
 import type { AdminUser, AdminUsersResult } from "../../types/admin";
-
-const unwrapData = <T>(response: unknown): T => {
-  const env = response as { data: T };
-  return env.data;
-};
 
 const EMPTY_META = { page: 1, limit: 10, total: 0, totalPages: 0 };
 
@@ -43,20 +37,6 @@ export const userApi = baseApi.injectEndpoints({
       },
     }),
 
-    updateUserRole: build.mutation<
-      AdminUser,
-      { id: string; role: Role }
-    >({
-      query: ({ id, role }) => ({
-        url: `/api/v1/admin/users/${id}/role`,
-        method: "PATCH",
-        data: { role },
-      }),
-      invalidatesTags: ["user"],
-      transformResponse: (response: unknown): AdminUser =>
-        unwrapData<AdminUser>(response),
-    }),
-
     deleteUser: build.mutation<void, string>({
       query: (id) => ({
         url: `/api/v1/admin/users/${id}`,
@@ -67,8 +47,4 @@ export const userApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetAdminUsersQuery,
-  useUpdateUserRoleMutation,
-  useDeleteUserMutation,
-} = userApi;
+export const { useGetAdminUsersQuery, useDeleteUserMutation } = userApi;

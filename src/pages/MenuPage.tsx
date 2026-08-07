@@ -11,6 +11,7 @@ import {
 import { useFoodFeed } from "../hooks/useFoodFeed";
 import { useCategories } from "../hooks/useCategories";
 import SectionHeading from "../components/ui/SectionHeading";
+import Select from "../components/ui/Select";
 import FoodGrid from "../components/food/FoodGrid";
 import FoodGridSkeleton from "../components/food/FoodGridSkeleton";
 import ErrorState from "../components/ui/ErrorState";
@@ -246,17 +247,18 @@ const MenuPage: React.FC = () => {
               >
                 Sort by
               </label>
-              <select
+              <Select
                 id="sort"
                 value={sort}
                 onChange={handleSortChange}
-                className="input !w-auto"
-              >
-                <option value="latest">Latest</option>
-                <option value="low">Price: Low to High</option>
-                <option value="high">Price: High to Low</option>
-                <option value="popular">Popular</option>
-              </select>
+                className="!w-auto"
+                options={[
+                  { value: "latest", label: "Latest" },
+                  { value: "low", label: "Price: Low to High" },
+                  { value: "high", label: "Price: High to Low" },
+                  { value: "popular", label: "Popular" },
+                ]}
+              />
 
               {hasFilters && (
                 <button onClick={clearFilters} className="btn-ghost !px-3">
@@ -318,18 +320,18 @@ const MenuPage: React.FC = () => {
               >
                 Minimum Rating
               </label>
-              <select
+              <Select
                 id="rating"
                 value={rating}
                 onChange={handleRatingChange}
-                className="input !w-full"
-              >
-                <option value="">Any Rating</option>
-                <option value="4">4+ Stars</option>
-                <option value="3">3+ Stars</option>
-                <option value="2">2+ Stars</option>
-                <option value="1">1+ Stars</option>
-              </select>
+                options={[
+                  { value: "", label: "Any Rating" },
+                  { value: "4", label: "4+ Stars" },
+                  { value: "3", label: "3+ Stars" },
+                  { value: "2", label: "2+ Stars" },
+                  { value: "1", label: "1+ Stars" },
+                ]}
+              />
             </div>
 
             {/* Availability Filter */}

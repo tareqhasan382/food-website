@@ -11,7 +11,6 @@ import EmptyState from "../../components/ui/EmptyState";
 import {
   useDeleteUserMutation,
   useGetAdminUsersQuery,
-  useUpdateUserRoleMutation,
 } from "../../redux/api/userApi";
 import { useAppSelector } from "../../redux/hooks";
 import type { Role } from "../../types/auth";
@@ -53,26 +52,11 @@ const UsersPage: React.FC = () => {
   const { data, isFetching, isLoading, refetch } = useGetAdminUsersQuery(args, {
     refetchOnMountOrArgChange: true,
   });
-  const [updateRole, { isLoading: isUpdatingRole }] =
-    useUpdateUserRoleMutation();
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   const users = data?.users ?? [];
   const meta = data?.meta;
   const totalPages = meta?.totalPages ?? 1;
-
-  const handleRoleChange = async (user: AdminUser, role: Role): Promise<void> => {
-    if (user.role === role) return;
-    try {
-      await updateRole({ id: user._id, role }).unwrap();
-      toast.success(`${user.name}'s role updated to ${role}`);
-    } catch (err) {
-      const msg =
-        (err as { data?: { message?: string } })?.data?.message ??
-        "Failed to update role";
-      toast.error(msg);
-    }
-  };
 
   const handleDelete = async (user: AdminUser): Promise<void> => {
     const confirmed = window.confirm(
@@ -149,7 +133,6 @@ const UsersPage: React.FC = () => {
                   <th className="px-5 py-3 font-semibold">Role</th>
                   <th className="px-5 py-3 font-semibold">Joined</th>
                   <th className="px-5 py-3 font-semibold">Verified</th>
-                  <th className="px-5 py-3 font-semibold">Change role</th>
                   <th className="px-5 py-3 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
@@ -204,26 +187,6 @@ const UsersPage: React.FC = () => {
                         >
                           {user.emailVerified ? "Verified" : "Unverified"}
                         </span>
-                      </td>
-                      <td className="px-5 py-3">
-                        <select
-                          value={user.role}
-                          onChange={(e) =>
-                            void handleRoleChange(
-                              user,
-                              e.target.value as Role
-                            )
-                          }
-                          disabled={isSelf || isUpdatingRole}
-                          className="input !w-auto !rounded-lg !px-3 !py-1.5 text-xs"
-                          aria-label={`Change role for ${user.name}`}
-                        >
-                          <option value="user">User</option>
-                          <option value="admin">Admin</option>
-                          {user.role === "superAdmin" && (
-                            <option value="superAdmin">Super Admin</option>
-                          )}
-                        </select>
                       </td>
                       <td className="px-5 py-3">
                         <div className="flex justify-end">

@@ -1,6 +1,5 @@
 import { baseApi } from "./baseApi";
 import type {
-  ICategory,
   IFood,
   IFoodsMeta,
   IGetFoodsArgs,
@@ -71,16 +70,6 @@ export const foodApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["food"],
     }),
-
-    getCategories: build.query<ICategory[], void>({
-      query: () => ({
-        url: "/api/v1/categories",
-        method: "GET",
-      }),
-      providesTags: ["category"],
-      transformResponse: (response: unknown): ICategory[] =>
-        unwrapData<ICategory[]>(response) ?? [],
-    }),
   }),
 });
 
@@ -90,5 +79,4 @@ export const {
   useGetFoodsQuery,
   useGetFoodQuery,
   useDeleteFoodMutation,
-  useGetCategoriesQuery,
 } = foodApi;

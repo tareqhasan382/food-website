@@ -5,6 +5,7 @@ import {
   FaChartPie,
   FaClipboardList,
   FaFileAlt,
+  FaPercent,
   FaSignOutAlt,
   FaStore,
   FaTags,
@@ -27,6 +28,7 @@ const navItems = [
   { to: "/dashboard/categories", label: "Categories", icon: FaTags },
   { to: "/dashboard/users", label: "Users", icon: FaUsers },
   { to: "/dashboard/coupons", label: "Coupons", icon: FaTicketAlt },
+  { to: "/dashboard/promotions", label: "Promotions", icon: FaPercent },
   { to: "/dashboard/analytics", label: "Analytics", icon: FaChartLine },
   { to: "/dashboard/reports", label: "Reports", icon: FaFileAlt },
 ];

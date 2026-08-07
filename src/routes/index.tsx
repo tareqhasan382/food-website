@@ -46,6 +46,7 @@ const FoodFormPage = lazy(() => import("../pages/dashboard/FoodFormPage"));
 const CategoriesPage = lazy(() => import("../pages/dashboard/CategoriesPage"));
 const UsersPage = lazy(() => import("../pages/dashboard/UsersPage"));
 const CouponsPage = lazy(() => import("../pages/dashboard/CouponsPage"));
+const PromotionsPage = lazy(() => import("../pages/dashboard/PromotionsPage"));
 const AnalyticsPage = lazy(() => import("../pages/dashboard/AnalyticsPage"));
 const ReportsPage = lazy(() => import("../pages/dashboard/ReportsPage"));
 
@@ -111,6 +112,7 @@ const routes = createBrowserRouter([
           { path: "foods/edit/:id", element: withLoader(<FoodFormPage />) },
           { path: "users", element: withLoader(<UsersPage />) },
           { path: "coupons", element: withLoader(<CouponsPage />) },
+          { path: "promotions", element: withLoader(<PromotionsPage />) },
           { path: "analytics", element: withLoader(<AnalyticsPage />) },
           { path: "reports", element: withLoader(<ReportsPage />) },
         ],

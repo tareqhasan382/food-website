@@ -11,6 +11,7 @@ import {
 import { toast } from "react-toastify";
 import EmptyState from "../../components/ui/EmptyState";
 import Spinner from "../../components/ui/Spinner";
+import Select from "../../components/ui/Select";
 import CategoryLabel from "../../components/category/CategoryLabel";
 import {
   useDeleteFoodMutation,
@@ -99,13 +100,13 @@ const FoodsPage: React.FC = () => {
             className="input pl-9"
           />
         </div>
-        <select
+        <Select
           value={category}
           onChange={(e) => {
             setCategory(e.target.value);
             setPage(1);
           }}
-          className="input sm:w-48"
+          className="sm:w-48"
           aria-label="Filter by category"
         >
           <option value="">All categories</option>
@@ -114,7 +115,7 @@ const FoodsPage: React.FC = () => {
               {cat.name}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="card overflow-hidden">

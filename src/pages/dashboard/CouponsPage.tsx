@@ -14,6 +14,7 @@ import { MdClose } from "react-icons/md";
 import { toast } from "react-toastify";
 import Spinner from "../../components/ui/Spinner";
 import EmptyState from "../../components/ui/EmptyState";
+import Select from "../../components/ui/Select";
 import {
   useCreateCouponMutation,
   useDeleteCouponMutation,
@@ -239,32 +240,34 @@ const CouponsPage: React.FC = () => {
             className="input pl-9"
           />
         </div>
-        <select
+        <Select
           value={type}
           onChange={(e) => {
             setType(e.target.value);
             setPage(1);
           }}
-          className="input sm:w-44"
+          className="sm:w-44"
           aria-label="Filter by type"
-        >
-          <option value="">All types</option>
-          <option value="percentage">Percentage</option>
-          <option value="fixed">Fixed amount</option>
-        </select>
-        <select
+          options={[
+            { value: "", label: "All types" },
+            { value: "percentage", label: "Percentage" },
+            { value: "fixed", label: "Fixed amount" },
+          ]}
+        />
+        <Select
           value={active}
           onChange={(e) => {
             setActive(e.target.value);
             setPage(1);
           }}
-          className="input sm:w-44"
+          className="sm:w-44"
           aria-label="Filter by status"
-        >
-          <option value="">All statuses</option>
-          <option value="true">Active</option>
-          <option value="false">Inactive</option>
-        </select>
+          options={[
+            { value: "", label: "All statuses" },
+            { value: "true", label: "Active" },
+            { value: "false", label: "Inactive" },
+          ]}
+        />
       </div>
 
       <div className="card overflow-hidden">
@@ -461,14 +464,14 @@ const CouponsPage: React.FC = () => {
                     <label htmlFor="coupon-type" className="label">
                       Type
                     </label>
-                    <select
+                    <Select
                       id="coupon-type"
-                      className="input"
                       {...register("type", { required: "Type is required" })}
-                    >
-                      <option value="percentage">Percentage (%)</option>
-                      <option value="fixed">Fixed amount ($)</option>
-                    </select>
+                      options={[
+                        { value: "percentage", label: "Percentage (%)" },
+                        { value: "fixed", label: "Fixed amount ($)" },
+                      ]}
+                    />
                   </div>
                   <div>
                     <label htmlFor="coupon-value" className="label">
