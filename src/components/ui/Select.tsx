@@ -152,7 +152,19 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           setOpen(false);
         }
       };
-      const handleViewportChange = (): void => setOpen(false);
+      const handleViewportChange = (event: Event): void => {
+        // Ignore scroll events from inside the widget itself (e.g. the user
+        // scrolling the option list); only close on page-level scroll/resize.
+        const target = event.target as Node | null;
+        if (
+          target &&
+          (rootRef.current?.contains(target) ||
+            popupRef.current?.contains(target))
+        ) {
+          return;
+        }
+        setOpen(false);
+      };
       document.addEventListener("mousedown", handlePointerDown);
       document.addEventListener("focusin", handleFocusIn);
       window.addEventListener("scroll", handleViewportChange, true);
@@ -176,12 +188,33 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     const selectValue = (nextValue: string): void => {
       if (disabled) return;
+      const item = items.find((i) => i.value === nextValue);
+      if (item?.disabled) return;
       setSelected(nextValue);
       setOpen(false);
       const element = selectRef.current;
       if (element) {
         element.value = nextValue;
-        element.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      if (onChange) {
+        // Deliver the value directly: dispatching a native "change" event on a
+        // React-controlled <select> gets its value reset by React's controlled
+        // reconciliation, so handlers would read a stale/empty value.
+        const changeEvent = new Event("change", { bubbles: true });
+        const target = {
+          value: nextValue,
+          name: name ?? element?.name ?? "",
+          type: element?.type ?? "select-one",
+        };
+        Object.defineProperty(changeEvent, "target", {
+          value: target,
+          configurable: true,
+        });
+        Object.defineProperty(changeEvent, "currentTarget", {
+          value: target,
+          configurable: true,
+        });
+        onChange(changeEvent as unknown as React.ChangeEvent<HTMLSelectElement>);
       }
     };
 
@@ -274,7 +307,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         }
       } else if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        selectValue(items[index].value);
+        const target = items[index];
+        if (target && !target.disabled) selectValue(target.value);
       } else if (event.key === "Escape") {
         event.preventDefault();
         setOpen(false);
@@ -297,17 +331,27 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       <div ref={rootRef} className={`relative inline-flex w-full ${className}`}>
         {/* Hidden native select keeps form/validation + react-hook-form working */}
         <select
-          ref={setSelectRef}
-          name={name}
-          disabled={disabled}
-          defaultValue={value === undefined ? defaultValue : undefined}
-          value={value === undefined ? undefined : selected}
-          onChange={onChange}
-          tabIndex={-1}
-          aria-hidden="true"
-          className="sr-only"
-          {...rest}
-        />
+            ref={setSelectRef}
+            name={name}
+            disabled={disabled}
+            defaultValue={value === undefined ? defaultValue : undefined}
+            value={value === undefined ? undefined : selected}
+            onChange={onChange}
+            tabIndex={-1}
+            aria-hidden="true"
+            className="sr-only"
+            {...rest}
+          >
+            {items.map((item) => (
+              <option
+                key={item.value}
+                value={item.value}
+                disabled={item.disabled}
+              >
+                {item.label}
+              </option>
+            ))}
+          </select>
 
         <button
           ref={triggerRef}
