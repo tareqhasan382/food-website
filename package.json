@@ -39,5 +39,9 @@
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.62.4",
+    "esbuild": "^0.28.2"
   }
 }

@@ -36,6 +36,7 @@ const LoginPage: React.FC = () => {
     setSubmitting(true);
     try {
       const { user, token } = await login(data);
+      //console.log("user------->",user)
       dispatch(setCredentials({ user, token }));
       toast.success(`Welcome back, ${user.name.split(" ")[0]}!`);
       navigate(isAdminRole(user.role) ? "/dashboard" : from ?? "/");
