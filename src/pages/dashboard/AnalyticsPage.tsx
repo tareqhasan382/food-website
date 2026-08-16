@@ -15,6 +15,7 @@ import {
   formatCurrency,
 } from "../../components/charts/chart-utils";
 import { foodImage } from "../../utils/food-image";
+import {FaStore} from "react-icons/fa";
 
 const RANGES = [7, 30, 90, 365];
 
@@ -205,12 +206,14 @@ const AnalyticsPage: React.FC = () => {
                   <span className="w-5 shrink-0 text-sm font-bold text-gray-400">
                     {index + 1}
                   </span>
-                  <img
-                    src={foodImage({ images: food.image ? [food.image] : [] })}
-                    alt={food.name}
-                    className="h-10 w-10 shrink-0 rounded-lg object-cover"
-                    loading="lazy"
-                  />
+                  {food.image? <img
+                      src={foodImage({ images: food.image ? [food.image] : [] })}
+                      alt={food.name}
+                      className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                      loading="lazy"
+                  />:<span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-lg text-white">
+              <FaStore />
+            </span>}
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex items-baseline justify-between gap-2">
                       <span className="truncate text-sm font-semibold text-gray-800">
